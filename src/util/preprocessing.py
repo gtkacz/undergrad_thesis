@@ -1,27 +1,47 @@
 import random
 from typing import Sequence
 
+import cv2
 import numpy as np
 import skimage
 
 from .enums import *
 
 
-def gray_scale(image: np.ndarray) -> np.ndarray:
+def change_color_space(image: np.ndarray, domain: ColorDomain) -> np.ndarray:
     """
-    Convert an RGB image to gray scale.
+    Change the color space of an image.
 
     Args:
-        image (np.ndarray): The image to convert to gray scale as a numpy array.
+        image (np.ndarray): The image to change the color space of as a numpy array.
+        domain (ColorDomain): The color domain to change the image to.
+
+    Raises:
+        ValueError: If the image is not in RGB format or if an unknown color domain is provided.
 
     Returns:
-        np.ndarray: The gray scale image as a numpy array.
-        
-    Raises:
-        AssertionError: If the image is not in RGB format.
+        np.ndarray: The image in the new color space as a numpy array.
     """
     assert image.ndim == 3, 'Image must be in RGB format.'
-    return skimage.color.rgb2gray(image)
+
+    match domain:
+        case ColorDomain.GRAYSCALE:
+            return skimage.color.rgb2gray(image)
+
+        case ColorDomain.HSV:
+            return skimage.color.rgb2hsv(image)[:, :, 2]
+
+        case ColorDomain.LAB:
+            return skimage.color.rgb2lab(image)[:, :, 0]
+
+        case ColorDomain.YUV:
+            return skimage.color.rgb2yuv(image)[:, :, 0]
+
+        case ColorDomain.YCBCR:
+            return cv2.cvtColor(image, cv2.COLOR_RGB2YCR_CB)[:, :, 0]
+
+        case _:
+            raise ValueError(f'Unknown color domain: {domain}.')
 
 
 def resize(image: np.ndarray, size: int = 512) -> np.ndarray:

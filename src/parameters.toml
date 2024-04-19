@@ -1,0 +1,4 @@
+[TRAINING]
+healthy_skin_path = './dataset/NORMAL SKIN/'
+diseased_skin_path = './dataset/PSORIASIS/'
+training_dataset_ratio = 0.8

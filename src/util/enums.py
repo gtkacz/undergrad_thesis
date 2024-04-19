@@ -26,3 +26,12 @@ class Augmentation(Enum):
     SCALE = 'scale'
     SHEAR = 'shear'
     PERSPECTIVE = 'perspective'
+
+
+class ColorDomain(Enum):
+    RGB = 'rgb'
+    GRAYSCALE = 'grayscale'
+    HSV = 'hsv'
+    LAB = 'lab'
+    YUV = 'yuv'
+    YCBCR = 'ycbcr'
