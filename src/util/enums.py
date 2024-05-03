@@ -43,3 +43,7 @@ class EqualizationMethod(Enum):
     FELZENSZWALB = 'felzenszwalb'
     QUICKSHIFT = 'quickshift'
     SLIC = 'slic'
+
+
+class LossFunction(Enum):
+    pass

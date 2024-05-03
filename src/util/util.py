@@ -47,13 +47,13 @@ def flatten_prediction(prediction: list[dict[str, str | float]]) -> dict[str, st
     return {pred['label']: pred['score'] for pred in prediction}
 
 
-def train_model(model: nn.Module, train_loader: DataLoader, criterion: LossFunction, optimizer: optim.Optimizer, num_epochs: int = 10, device: torchdevice = torchdevice('cpu')) -> None:
+def train_model(model: nn.Module, data_loader: DataLoader, criterion: LossFunction, optimizer: optim.Optimizer, num_epochs: int = 10, device: torchdevice = torchdevice('cpu')) -> None:
     """
     Train a PyTorch model.
 
     Args:
         model (nn.Module): The model to train.
-        train_loader (DataLoader): The DataLoader for the training data.
+        data_loader (DataLoader): The DataLoader for the training data.
         criterion (LossFunction): The loss function.
         optimizer (optim.Optimizer): The optimizer.
         num_epochs (int, optional): The number of epochs to train for. Defaults to 10.
@@ -63,7 +63,7 @@ def train_model(model: nn.Module, train_loader: DataLoader, criterion: LossFunct
         model.to(device).train()
         running_loss = 0.0
 
-        for images, labels in train_loader:
+        for images, labels in data_loader:
             images, labels = images.to(device), labels.to(device)
 
             labels = labels.float()
@@ -75,10 +75,10 @@ def train_model(model: nn.Module, train_loader: DataLoader, criterion: LossFunct
 
             running_loss += loss.item()
 
-        print(f'Epoch {epoch+1}, Loss: {running_loss/len(train_loader)}')
+        print(f'Epoch {epoch+1}, Loss: {running_loss/len(data_loader)}')
 
 
-def get_datasets(dataset_class: type[Dataset[Tensor]], training_ratio: float, validation_ratio: float, testing_ratio: float, seed: int = 42, **kwargs) -> tuple[TrainingDataset, ValidationDataset, TestDataset]:
+def split_datasets(dataset: Dataset[Tensor], training_ratio: float, validation_ratio: float, testing_ratio: float, seed: int = 42) -> tuple[TrainingDataset, ValidationDataset, TestDataset]:
     """
     Split a dataset into training, validation, and testing sets.
 
@@ -92,7 +92,6 @@ def get_datasets(dataset_class: type[Dataset[Tensor]], training_ratio: float, va
     Returns:
         tuple[Dataset, Dataset, Dataset]: The training, validation, and testing datasets.
     """
-    dataset = dataset_class(**kwargs)
     dataset_size = len(dataset)
 
     indices = list(range(dataset_size))
