@@ -1,7 +1,6 @@
 import os
 
 from PIL import Image
-from torch import Tensor
 from torch.utils.data import Dataset
 from torchvision import transforms
 
@@ -13,7 +12,7 @@ class SkinDiseaseDataset(Dataset):
     and '/dataset/diseased' for diseased skin images.
     """
 
-    def __init__(self, root_dir: str, transform: transforms.Compose | None = None):
+    def __init__(self, root_dir: str, transform: transforms.Compose | None = None, ratio: float = 1.0, seed: int = 42):
         """
         Args:
             root_dir (str): The root directory of the dataset.
@@ -26,7 +25,7 @@ class SkinDiseaseDataset(Dataset):
 
         for label, condition in enumerate(['healthy', 'diseased']):
             condition_path = os.path.join(self.root_dir, condition)
-
+            
             for filename in os.listdir(condition_path):
                 if filename.split('.')[-1] not in ['jpg', 'jpeg', 'png']:
                     continue

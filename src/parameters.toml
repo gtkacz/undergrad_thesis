@@ -2,6 +2,8 @@
 healthy_skin_path = './dataset/healthy/'
 diseased_skin_path = './dataset/diseased/'
 training_dataset_ratio = 0.8
-pretrained_model_name = 'youngp5/skin-conditions'
-target_label = 'Psoriasis pictures Lichen Planus and related diseases'
-threshold = 0.9
+precision_threshold = 0.9
+batch_size = 32
+num_workers = 4
+shuffle = true
+pin_memory = true
