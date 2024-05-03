@@ -35,3 +35,11 @@ class ColorDomain(Enum):
     LAB = 'lab'
     YUV = 'yuv'
     YCBCR = 'ycbcr'
+
+
+class EqualizationMethod(Enum):
+    THRESHOLD = 'threshold'
+    WATERSHED = 'watershed'
+    FELZENSZWALB = 'felzenszwalb'
+    QUICKSHIFT = 'quickshift'
+    SLIC = 'slic'

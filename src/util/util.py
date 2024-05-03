@@ -6,6 +6,8 @@ import torch.optim as optim
 from skimage import io
 from torch.utils.data import DataLoader
 
+from .types import LossFunction
+
 
 def read_images(directory: str) -> list[np.ndarray]:
     """
@@ -44,7 +46,7 @@ def flatten_prediction(prediction: list[dict[str, str | float]]) -> dict[str, st
     return {pred['label']: pred['score'] for pred in prediction}
 
 
-def train_model(model: nn.Module, train_loader: DataLoader, criterion: nn.modules.loss._Loss, optimizer: optim.Optimizer, num_epochs: int = 10) -> None:
+def train_model(model: nn.Module, train_loader: DataLoader, criterion: LossFunction, optimizer: optim.Optimizer, num_epochs: int = 10) -> None:
     """
     Train a PyTorch model.
 
