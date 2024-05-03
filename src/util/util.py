@@ -47,7 +47,7 @@ def flatten_prediction(prediction: list[dict[str, str | float]]) -> dict[str, st
     return {pred['label']: pred['score'] for pred in prediction}
 
 
-def train_model(model: nn.Module, data_loader: DataLoader, criterion: LossFunction, optimizer: optim.Optimizer, num_epochs: int = 10, device: torchdevice = torchdevice('cpu')) -> None:
+def train_model(model: nn.Module, data_loader: DataLoader, criterion: LossFunction, optimizer: optim.Optimizer, num_epochs: int = 10, device: torchdevice = torchdevice('cpu'), verbose: bool = True) -> None:
     """
     Train a PyTorch model.
 
@@ -58,6 +58,7 @@ def train_model(model: nn.Module, data_loader: DataLoader, criterion: LossFuncti
         optimizer (optim.Optimizer): The optimizer.
         num_epochs (int, optional): The number of epochs to train for. Defaults to 10.
         torchdevice (torch.device, optional): The device to train on. Defaults to torch.device('cpu').
+        verbose (bool, optional): Whether to print the loss. Defaults to True.
     """
     for epoch in range(num_epochs):
         model.to(device).train()
@@ -75,17 +76,17 @@ def train_model(model: nn.Module, data_loader: DataLoader, criterion: LossFuncti
 
             running_loss += loss.item()
 
-        print(f'Epoch {epoch+1}, Loss: {running_loss/len(data_loader)}')
+        if verbose:
+            print(f'Epoch {epoch+1}, Loss: {running_loss/len(data_loader)}')
 
 
-def split_datasets(dataset: Dataset[Tensor], training_ratio: float, validation_ratio: float, testing_ratio: float, seed: int = 42) -> tuple[TrainingDataset, ValidationDataset, TestDataset]:
+def split_datasets(dataset: Dataset[Tensor], training_ratio: float, testing_ratio: float, seed: int = 42) -> tuple[TrainingDataset, TestDataset]:
     """
     Split a dataset into training, validation, and testing sets.
 
     Args:
         dataset_class (type[Dataset]): The class of the dataset to split.
         training_ratio (float): The ratio of the dataset to use for training.
-        validation_ratio (float): The ratio of the dataset to use for validation.
         testing_ratio (float): The ratio of the dataset to use for testing.
         seed (int, optional): The random seed. Defaults to 42.
 
@@ -100,16 +101,12 @@ def split_datasets(dataset: Dataset[Tensor], training_ratio: float, validation_r
     np.random.shuffle(indices)
 
     training_split = int(np.floor(training_ratio * dataset_size))
-    validation_split = int(np.floor(validation_ratio * dataset_size))
     testing_split = int(np.floor(testing_ratio * dataset_size))
 
     training_indices = indices[:training_split]
-    validation_indices = indices[training_split:training_split+validation_split]
-    testing_indices = indices[training_split +
-                              validation_split:training_split+validation_split+testing_split]
+    testing_indices = indices[training_split:training_split+testing_split]
 
     training_set = Subset(dataset, training_indices)
-    validation_set = Subset(dataset, validation_indices)
     testing_set = Subset(dataset, testing_indices)
 
-    return training_set, validation_set, testing_set
+    return training_set, testing_set
