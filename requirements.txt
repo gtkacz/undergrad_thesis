@@ -6,3 +6,4 @@ torch==2.2.2+cu121
 # numba==0.59.1
 opencv-python==4.9.0.80
 loguru==0.7.2
+datasets==2.19.0

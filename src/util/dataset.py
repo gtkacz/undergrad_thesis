@@ -11,7 +11,7 @@ class PsoriasisDataset(Dataset):
         self.transform = transform
         self.images = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.images)
 
     def __getitem__(self, idx: int):

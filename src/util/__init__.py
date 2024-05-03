@@ -1,3 +1,4 @@
+from .cnn import *
 from .dataset import *
 from .enums import *
 from .module import *
