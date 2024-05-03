@@ -4,6 +4,7 @@ import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 from skimage import io
+from torch import device as torchdevice
 from torch.utils.data import DataLoader
 
 from .types import LossFunction
@@ -46,22 +47,25 @@ def flatten_prediction(prediction: list[dict[str, str | float]]) -> dict[str, st
     return {pred['label']: pred['score'] for pred in prediction}
 
 
-def train_model(model: nn.Module, train_loader: DataLoader, criterion: LossFunction, optimizer: optim.Optimizer, num_epochs: int = 10) -> None:
+def train_model(model: nn.Module, train_loader: DataLoader, criterion: LossFunction, optimizer: optim.Optimizer, num_epochs: int = 10, device: torchdevice = torchdevice('cpu')) -> None:
     """
     Train a PyTorch model.
 
     Args:
         model (nn.Module): The model to train.
         train_loader (DataLoader): The DataLoader for the training data.
-        criterion (nn.modules.loss._Loss): The loss function.
+        criterion (LossFunction): The loss function.
         optimizer (optim.Optimizer): The optimizer.
         num_epochs (int, optional): The number of epochs to train for. Defaults to 10.
+        torchdevice (torch.device, optional): The device to train on. Defaults to torch.device('cpu').
     """
     for epoch in range(num_epochs):
-        model.train()
+        model.to(device).train()
         running_loss = 0.0
 
         for images, labels in train_loader:
+            images, labels = images.to(device), labels.to(device)
+            
             labels = labels.float()
             optimizer.zero_grad()
             outputs = model(images)

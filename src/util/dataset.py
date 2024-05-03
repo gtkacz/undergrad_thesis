@@ -28,6 +28,9 @@ class SkinDiseaseDataset(Dataset):
             condition_path = os.path.join(self.root_dir, condition)
 
             for filename in os.listdir(condition_path):
+                if filename.split('.')[-1] not in ['jpg', 'jpeg', 'png']:
+                    continue
+
                 self.image_paths.append(os.path.join(condition_path, filename))
                 self.labels.append(label)
 
@@ -37,7 +40,7 @@ class SkinDiseaseDataset(Dataset):
         """
         return len(self.image_paths)
 
-    def __getitem__(self, idx: int) -> tuple[Tensor, int]:
+    def __getitem__(self, idx: int) -> tuple[Image.Image, int]:
         """
         Generates one sample of data.
         """
