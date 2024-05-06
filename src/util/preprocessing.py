@@ -3,6 +3,7 @@ import numpy as np
 import PIL.Image
 import skimage
 import torch.nn as nn
+from PIL import ImageOps
 from PIL.Image import Image
 from torch import Tensor
 from torchvision import transforms
@@ -32,7 +33,7 @@ class _Preprocess(nn.Module):
         return parsed_image, return_type
 
 
-class ChangeColorSpace(_Preprocess):
+class ChangeColorSpaceTransform(_Preprocess):
     def __init__(self, domain: ColorDomain):
         super().__init__()
         self.domain = domain
@@ -68,7 +69,8 @@ class ChangeColorSpace(_Preprocess):
                 return_value = skimage.color.rgb2yuv(image)[:, :, 0]
 
             case ColorDomain.YCBCR:
-                return_value = cv2.cvtColor(image, cv2.COLOR_RGB2YCR_CB)[:, :, 0]
+                return_value = cv2.cvtColor(
+                    image, cv2.COLOR_RGB2YCR_CB)[:, :, 0]
 
             case _:
                 raise ValueError(f'Unknown color domain: {self.domain}.')
@@ -76,7 +78,7 @@ class ChangeColorSpace(_Preprocess):
         return PIL.Image.fromarray(return_value) if return_type == Image else transforms.ToTensor()(PIL.Image.fromarray(return_value))
 
 
-class Denoise(_Preprocess):
+class DenoiseTransform(_Preprocess):
     def __init__(self, method: DenoisingMethod):
         super().__init__()
         self.method = method
@@ -102,7 +104,7 @@ class Denoise(_Preprocess):
 
             case DenoisingMethod.BILATERAL:
                 return_value = skimage.restoration.denoise_bilateral(
-                    image, sigma_color=0.05, sigma_spatial=15)
+                    image[:, :, :3], sigma_color=0.05, sigma_spatial=15)
 
             case DenoisingMethod.WAVELET:
                 return_value = skimage.restoration.denoise_wavelet(image)
@@ -127,7 +129,7 @@ class Denoise(_Preprocess):
         return PIL.Image.fromarray(return_value) if return_type == Image else transforms.ToTensor()(PIL.Image.fromarray(return_value))
 
 
-class Normalize(_Preprocess):
+class NormalizeTransform(_Preprocess):
     def __init__(self):
         super().__init__()
 
@@ -143,53 +145,88 @@ class Normalize(_Preprocess):
         """
         image, return_type = self._parse_forward_input(image)
 
-        return_value = (image - np.min(image)) / (np.max(image) - np.min(image))
+        return_value = (image - np.min(image)) / \
+            (np.max(image) - np.min(image))
 
         return PIL.Image.fromarray(return_value) if return_type == Image else transforms.ToTensor()(PIL.Image.fromarray(return_value))
 
 
-class Equalize(_Preprocess):
-    def __init__(self, method: EqualizationMethod, nbins: int = 256):
-        super().__init__()
-        self.method = method
-        self.nbins = nbins
+# class EqualizeTransform(_Preprocess):
+#     def __init__(self, method: EqualizationMethod, nbins: int = 256):
+#         super().__init__()
+#         self.method = method
+#         self.nbins = nbins
 
-    def forward(self, image: np.ndarray | Tensor | Image) -> Tensor | Image:
+#     def forward(self, image: np.ndarray | Tensor | Image) -> Tensor | Image:
+#         """
+#         Equalize an image using histogram equalization.
+
+#         Args:
+#             image (np.ndarray): The image to equalize as a numpy array.
+
+#         Returns:
+#             np.ndarray: The equalized image as a numpy array.
+#         """
+#         image, return_type = self._parse_forward_input(image)
+
+#         return_value = None
+
+#         match self.method:
+#             case EqualizationMethod.THRESHOLD:
+#                 return_value = image > skimage.filters.threshold_otsu(
+#                     image)
+
+#             case EqualizationMethod.WATERSHED:
+#                 return_value = skimage.segmentation.watershed(
+#                     image)
+
+#             case EqualizationMethod.FELZENSZWALB:
+#                 return_value = skimage.segmentation.felzenszwalb(
+#                     image)
+
+#             case EqualizationMethod.QUICKSHIFT:
+#                 return_value = skimage.segmentation.quickshift(
+#                     image)
+
+#             case EqualizationMethod.SLIC:
+#                 return_value = skimage.segmentation.slic(image)
+
+#             case _:
+#                 raise ValueError(
+#                     f'Unknown equalization method: {self.method}')
+
+#         return PIL.Image.fromarray(return_value) if return_type == Image else transforms.ToTensor()(PIL.Image.fromarray(return_value))
+
+class EqualizeTransform():
+    """
+    Equalizes an image using various methods.
+
+    Args:
+        method (EqualizeMethod): The equalization method to use.
+        **kwargs (dict): Additional arguments specific to the method.
+
+    Supported methods and kwargs:
+        - histogram (no additional arguments)
+        - clahe (clip_limit: float): Sets the contrast limiting parameter (default: 4.0)
+    """
+
+    def __init__(self, method = 'HISTOGRAM_EQUALIZATION', **kwargs):
+        self.method = method
+        self.kwargs = kwargs
+
+    def __call__(self, img):
         """
-        Equalize an image using histogram equalization.
+        Equalizes the given PIL image.
 
         Args:
-            image (np.ndarray): The image to equalize as a numpy array.
+            img (PIL.Image): The image to equalize.
 
         Returns:
-            np.ndarray: The equalized image as a numpy array.
+            PIL.Image: The equalized image.
         """
-        image, return_type = self._parse_forward_input(image)
-
-        return_value = None
-
-        match self.method:
-            case EqualizationMethod.THRESHOLD:
-                return_value = image > skimage.filters.threshold_otsu(
-                    image)
-
-            case EqualizationMethod.WATERSHED:
-                return_value = skimage.segmentation.watershed(
-                    image)
-
-            case EqualizationMethod.FELZENSZWALB:
-                return_value = skimage.segmentation.felzenszwalb(
-                    image)
-
-            case EqualizationMethod.QUICKSHIFT:
-                return_value = skimage.segmentation.quickshift(
-                    image)
-
-            case EqualizationMethod.SLIC:
-                return_value = skimage.segmentation.slic(image)
-
-            case _:
-                raise ValueError(
-                    f'Unknown equalization method: {self.method}')
-
-        return PIL.Image.fromarray(return_value) if return_type == Image else transforms.ToTensor()(PIL.Image.fromarray(return_value))
+        if self.method == 'HISTOGRAM_EQUALIZATION':
+            return ImageOps.equalize(img)
+        elif self.method == 'CLAHE':
+            return ImageOps.equalize(img, mask=ImageOps.grayscale(img))
+        else:
+            raise ValueError(f"Unsupported equalization method: {self.method}")

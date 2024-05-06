@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import torch
 import torch.nn as nn
 import torch.optim as optim
 from skimage import io
@@ -80,7 +81,7 @@ def train_model(model: nn.Module, data_loader: DataLoader, criterion: LossFuncti
             print(f'Epoch {epoch+1}, Loss: {running_loss/len(data_loader)}')
 
 
-def split_datasets(dataset: Dataset[Tensor], training_ratio: float, testing_ratio: float, seed: int = 42) -> tuple[TrainingDataset, TestDataset]:
+def split_datasets(dataset: Dataset[Tensor], training_ratio: float, testing_ratio: float, seed: int = 42) -> tuple[TrainingDataset, TestingDataset]:
     """
     Split a dataset into training, validation, and testing sets.
 
@@ -110,3 +111,33 @@ def split_datasets(dataset: Dataset[Tensor], training_ratio: float, testing_rati
     testing_set = Subset(dataset, testing_indices)
 
     return training_set, testing_set
+
+
+def test_model(model: nn.Module, test_loader: DataLoader, device: torchdevice) -> float:
+    """
+    Test a PyTorch model.
+
+    Args:
+        model (nn.Module): The model to test.
+        test_loader (DataLoader): The DataLoader for the testing data.
+        device (torchdevice): The device to test on.
+
+    Returns:
+        float: The accuracy of the model.
+    """
+    model.to(device).eval()
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for images, labels in test_loader:
+            images, labels = images.to(device), labels.to(device)
+
+            outputs = model(images)
+            # predicted = (outputs > 0.5).float()
+            _, predicted = torch.max(outputs, 1)
+
+            total += labels.size(0)
+            correct += (predicted.squeeze() == labels).sum().item()
+
+    return correct / total

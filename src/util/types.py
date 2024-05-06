@@ -7,4 +7,4 @@ LossFunction: TypeAlias = Callable[[Tensor, Tensor], Tensor]
 
 TrainingDataset: TypeAlias = Dataset[Tensor]
 ValidationDataset: TypeAlias = Dataset[Tensor]
-TestDataset: TypeAlias = Dataset[Tensor]
+TestingDataset: TypeAlias = Dataset[Tensor]

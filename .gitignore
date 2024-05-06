@@ -164,3 +164,4 @@ cython_debug/
 Template LaTeX/
 Orientações.md
 _*
+*.pth

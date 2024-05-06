@@ -7,9 +7,10 @@ class BinaryCNN(nn.Module):
     A simple convolutional neural network with layers suited for binary classification.
     """
 
-    def __init__(self):
+    def __init__(self, device: torch.device | None = None):
         super().__init__()
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = device if device else torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.to(self.device)
 
         self.conv_layers = nn.Sequential(
             nn.Conv2d(3, 32, kernel_size=3, stride=1, padding=1),

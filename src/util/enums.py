@@ -1,7 +1,19 @@
-from enum import Enum
+from enum import Enum as E
+from enum import EnumMeta
+from typing import List
 
 import torch.nn as nn
 import torch.optim as optim
+
+
+class MetaEnum(EnumMeta):
+    @property
+    def names(cls) -> List[str]:
+        return sorted(list(cls.__members__.keys()))
+
+
+class Enum(E, metaclass=MetaEnum):
+    pass
 
 
 class DenoisingMethod(Enum):
