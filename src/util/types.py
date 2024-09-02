@@ -4,7 +4,6 @@ from torch import Tensor
 from torch.utils.data import Dataset
 
 LossFunction: TypeAlias = Callable[[Tensor, Tensor], Tensor]
-
 TrainingDataset: TypeAlias = Dataset[Tensor]
 ValidationDataset: TypeAlias = Dataset[Tensor]
 TestingDataset: TypeAlias = Dataset[Tensor]

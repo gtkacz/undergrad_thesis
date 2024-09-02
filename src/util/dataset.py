@@ -12,11 +12,12 @@ class SkinDiseaseDataset(Dataset):
     and '/dataset/diseased' for diseased skin images.
     """
 
-    def __init__(self, root_dir: str, transform: transforms.Compose | None = None):
+    def __init__(self, root_dir: str, transform: transforms.Compose | None = None, max_samples: int = 1000):
         """
         Args:
             root_dir (str): The root directory of the dataset.
             transform (transforms.Compose, optional): Optional transform to be applied on a sample.
+            max_samples (int): The maximum number of samples to load from the dataset.
         """
         self.root_dir = root_dir
         self.transform = transform
@@ -32,6 +33,9 @@ class SkinDiseaseDataset(Dataset):
 
                 self.image_paths.append(os.path.join(condition_path, filename))
                 self.labels.append(label)
+
+                if len(self.image_paths) % max_samples == 0 and self.image_paths:
+                    break
 
     def __len__(self) -> int:
         """

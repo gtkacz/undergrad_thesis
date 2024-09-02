@@ -1,45 +1,59 @@
 import torch
 import torch.nn as nn
+from lightning import LightningModule
 
 
 class BinaryCNN(nn.Module):
     """
-    A simple convolutional neural network with layers suited for binary classification.
+    BinaryCNN is a simple Convolutional Neural Network (CNN) for binary classification. Based on: https://github.com/Harikrishnan6336/Mask_Classifier/blob/master/src/Mask_Classifier_CNN_.ipynb.
     """
 
     def __init__(self, device: torch.device | None = None):
         super().__init__()
-        self.device = device if device else torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = device or torch.device(
+            "cuda" if torch.cuda.is_available() else "cpu"
+        )
         self.to(self.device)
 
-        self.conv_layers = nn.Sequential(
+        self.cnn_layers = nn.Sequential(
             nn.Conv2d(3, 32, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(32),
             nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(p=0.25),
             nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2)
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(64),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(p=0.25),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(p=0.25),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(p=0.25),
         )
 
-        self.fc_layers = nn.Sequential(
-            nn.Linear(64 * 64 * 64, 128),
-            nn.ReLU(),
-            nn.Linear(128, 1),
-            nn.Sigmoid()
+        self.linear_layers = nn.Sequential(
+            nn.Linear(32768, 512),
+            nn.ReLU(inplace=True),
+            nn.Dropout(),
+            nn.Linear(512, 256),
+            nn.ReLU(inplace=True),
+            nn.Dropout(),
+            nn.Linear(256, 10),
+            nn.ReLU(inplace=True),
+            nn.Dropout(),
+            nn.Linear(10, 2),
         )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Forward pass of the network.
-
-        Args:
-            x (torch.Tensor): The input tensor.
-
-        Returns:
-            torch.Tensor: The output tensor.
-        """
-        x = self.conv_layers(x)
-        x = torch.flatten(x, start_dim=1)
-        x = self.fc_layers(x)
-
+    # Defining the forward pass
+    def forward(self, x):
+        x = self.cnn_layers(x)
+        x = x.view(x.size(0), -1)
+        x = self.linear_layers(x)
         return x

@@ -1,14 +1,28 @@
+import copy
 import os
+from functools import wraps
 
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from skimage import io
+from torch import Tensor
 from torch import device as torchdevice
 from torch.utils.data import DataLoader, Dataset, Subset
 
-from .types import *
+from .types import LossFunction, TestingDataset, TrainingDataset
+
+
+def __use_parameters_by_value(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        args_copy = [copy.deepcopy(arg) for arg in args]
+        kwargs_copy = {key: copy.deepcopy(value) for key, value in kwargs.items()}
+
+        return func(*args_copy, **kwargs_copy)
+
+    return wrapper
 
 
 def read_images(directory: str) -> list[np.ndarray]:
@@ -24,18 +38,20 @@ def read_images(directory: str) -> list[np.ndarray]:
     images = []
 
     for filename in os.listdir(directory):
-
         filepath = os.path.join(directory, filename)
 
-        if os.path.isfile(filepath):
-            if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp')):
-                image = io.imread(filepath)
-                images.append(image)
+        if os.path.isfile(filepath) and filename.lower().endswith(
+            (".png", ".jpg", ".jpeg", ".bmp")
+        ):
+            image = io.imread(filepath)
+            images.append(image)
 
     return images
 
 
-def flatten_prediction(prediction: list[dict[str, str | float]]) -> dict[str, str | float]:
+def flatten_prediction(
+    prediction: list[dict[str, str | float]],
+) -> dict[str, str | float]:
     """
     Flatten a list of predictions into a dictionary.
 
@@ -45,10 +61,19 @@ def flatten_prediction(prediction: list[dict[str, str | float]]) -> dict[str, st
     Returns:
         dict[str, float]: The flattened predictions.
     """
-    return {pred['label']: pred['score'] for pred in prediction}
+    return {pred["label"]: pred["score"] for pred in prediction} # type: ignore
 
 
-def train_model(model: nn.Module, data_loader: DataLoader, criterion: LossFunction, optimizer: optim.Optimizer, num_epochs: int = 10, device: torchdevice = torchdevice('cpu'), verbose: bool = True) -> None:
+@__use_parameters_by_value
+def train_model(
+    model: nn.Module,
+    data_loader: DataLoader,
+    criterion: LossFunction,
+    optimizer: optim.Optimizer,
+    num_epochs: int = 10,
+    device: torchdevice = torchdevice("cpu"),
+    verbose: bool = True,
+) -> None:
     """
     Train a PyTorch model.
 
@@ -61,8 +86,8 @@ def train_model(model: nn.Module, data_loader: DataLoader, criterion: LossFuncti
         torchdevice (torch.device, optional): The device to train on. Defaults to torch.device('cpu').
         verbose (bool, optional): Whether to print the loss. Defaults to True.
     """
+    model.to(device).train()
     for epoch in range(num_epochs):
-        model.to(device).train()
         running_loss = 0.0
 
         for images, labels in data_loader:
@@ -71,17 +96,25 @@ def train_model(model: nn.Module, data_loader: DataLoader, criterion: LossFuncti
             labels = labels.float()
             optimizer.zero_grad()
             outputs = model(images)
-            loss = criterion(outputs.squeeze(), labels)
+            # loss = criterion(outputs.squeeze(), labels)
+            # loss = criterion(outputs, labels.unsqueeze(1))
+            loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 
             running_loss += loss.item()
 
         if verbose:
-            print(f'Epoch {epoch+1}, Loss: {running_loss/len(data_loader)}')
+            print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(data_loader):.4f}")
 
 
-def split_datasets(dataset: Dataset[Tensor], training_ratio: float, testing_ratio: float, seed: int = 42) -> tuple[TrainingDataset, TestingDataset]:
+@__use_parameters_by_value
+def split_datasets(
+    dataset: Dataset[Tensor],
+    training_ratio: float,
+    testing_ratio: float,
+    seed: int = 42,
+) -> tuple[TrainingDataset, TestingDataset]:
     """
     Split a dataset into training, validation, and testing sets.
 
@@ -94,7 +127,7 @@ def split_datasets(dataset: Dataset[Tensor], training_ratio: float, testing_rati
     Returns:
         tuple[Dataset, Dataset, Dataset]: The training, validation, and testing datasets.
     """
-    dataset_size = len(dataset)
+    dataset_size = len(dataset) # type: ignore
 
     indices = list(range(dataset_size))
 
@@ -105,7 +138,7 @@ def split_datasets(dataset: Dataset[Tensor], training_ratio: float, testing_rati
     testing_split = int(np.floor(testing_ratio * dataset_size))
 
     training_indices = indices[:training_split]
-    testing_indices = indices[training_split:training_split+testing_split]
+    testing_indices = indices[training_split : training_split + testing_split]
 
     training_set = Subset(dataset, training_indices)
     testing_set = Subset(dataset, testing_indices)
@@ -113,6 +146,7 @@ def split_datasets(dataset: Dataset[Tensor], training_ratio: float, testing_rati
     return training_set, testing_set
 
 
+@__use_parameters_by_value
 def test_model(model: nn.Module, test_loader: DataLoader, device: torchdevice) -> float:
     """
     Test a PyTorch model.
@@ -134,7 +168,6 @@ def test_model(model: nn.Module, test_loader: DataLoader, device: torchdevice) -
             images, labels = images.to(device), labels.to(device)
 
             outputs = model(images)
-            # predicted = (outputs > 0.5).float()
             _, predicted = torch.max(outputs, 1)
 
             total += labels.size(0)
