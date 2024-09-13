@@ -39,19 +39,19 @@ class BinaryCNN(nn.Module):
         )
 
         self.linear_layers = nn.Sequential(
-            nn.Linear(32768, 512),
+            nn.Linear(128 * 14 * 14, 512),
             nn.ReLU(inplace=True),
             nn.Dropout(),
             nn.Linear(512, 256),
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.Linear(256, 10),
+            nn.Linear(256,10),
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.Linear(10, 2),
+            nn.Linear(10,2)
         )
 
-    # Defining the forward pass
+    # Defining the forward pass    
     def forward(self, x):
         x = self.cnn_layers(x)
         x = x.view(x.size(0), -1)

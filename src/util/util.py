@@ -97,8 +97,7 @@ def train_model(
             optimizer.zero_grad()
             outputs = model(images)
             # loss = criterion(outputs.squeeze(), labels)
-            # loss = criterion(outputs, labels.unsqueeze(1))
-            loss = criterion(outputs, labels)
+            loss = criterion(outputs, labels.unsqueeze(1))
             loss.backward()
             optimizer.step()
 
