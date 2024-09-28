@@ -11,7 +11,7 @@ from torch import Tensor
 from torch import device as torchdevice
 from torch.utils.data import DataLoader, Dataset, Subset
 
-from .types import LossFunction, TestingDataset, TrainingDataset
+from .types import LossFunction, TestingDataset, TrainingDataset, ValidationDataset
 
 
 def __use_parameters_by_value(func):
@@ -61,7 +61,7 @@ def flatten_prediction(
     Returns:
         dict[str, float]: The flattened predictions.
     """
-    return {pred["label"]: pred["score"] for pred in prediction} # type: ignore
+    return {pred["label"]: pred["score"] for pred in prediction}  # type: ignore
 
 
 @__use_parameters_by_value
@@ -95,16 +95,17 @@ def train_model(
 
             labels = labels.float()
             optimizer.zero_grad()
-            outputs = model(images)
-            # loss = criterion(outputs.squeeze(), labels)
-            loss = criterion(outputs, labels.unsqueeze(1))
+            outputs = model(images).squeeze()
+            loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 
             running_loss += loss.item()
 
         if verbose:
-            print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(data_loader):.4f}")
+            print(
+                f"Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(data_loader):.4f}"
+            )
 
 
 @__use_parameters_by_value
@@ -112,8 +113,9 @@ def split_datasets(
     dataset: Dataset[Tensor],
     training_ratio: float,
     testing_ratio: float,
+    validation_ratio: float,
     seed: int = 42,
-) -> tuple[TrainingDataset, TestingDataset]:
+) -> tuple[TrainingDataset, TestingDataset, ValidationDataset]:
     """
     Split a dataset into training, validation, and testing sets.
 
@@ -121,28 +123,39 @@ def split_datasets(
         dataset_class (type[Dataset]): The class of the dataset to split.
         training_ratio (float): The ratio of the dataset to use for training.
         testing_ratio (float): The ratio of the dataset to use for testing.
+        validation_ratio (float): The ratio of the dataset to use for validation.
         seed (int, optional): The random seed. Defaults to 42.
 
     Returns:
         tuple[Dataset, Dataset, Dataset]: The training, validation, and testing datasets.
     """
-    dataset_size = len(dataset) # type: ignore
+    dataset_size = len(dataset)  # type: ignore
 
     indices = list(range(dataset_size))
 
+    torch.manual_seed(seed)
     np.random.seed(seed)
+
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
     np.random.shuffle(indices)
 
     training_split = int(np.floor(training_ratio * dataset_size))
     testing_split = int(np.floor(testing_ratio * dataset_size))
+    validation_split = int(np.floor(validation_ratio * dataset_size))
 
     training_indices = indices[:training_split]
     testing_indices = indices[training_split : training_split + testing_split]
+    validation_indices = indices[training_split + testing_split :]
 
     training_set = Subset(dataset, training_indices)
     testing_set = Subset(dataset, testing_indices)
+    validation_set = Subset(dataset, validation_indices)
 
-    return training_set, testing_set
+    return training_set, testing_set, validation_set
 
 
 @__use_parameters_by_value
@@ -164,12 +177,11 @@ def test_model(model: nn.Module, test_loader: DataLoader, device: torchdevice) -
 
     with torch.no_grad():
         for images, labels in test_loader:
-            images, labels = images.to(device), labels.to(device)
+            images, labels = images.to(device), labels.to(device).float()
 
-            outputs = model(images)
-            _, predicted = torch.max(outputs, 1)
-
+            outputs = model(images).squeeze()
+            
             total += labels.size(0)
-            correct += (predicted.squeeze() == labels).sum().item()
+            correct += torch.sum((outputs > 0.5).float() == labels).item()
 
     return correct / total

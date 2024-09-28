@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from lightning import LightningModule
+from torchvision.models import vgg16
 
 
 class BinaryCNN(nn.Module):
@@ -15,45 +15,14 @@ class BinaryCNN(nn.Module):
         )
         self.to(self.device)
 
-        self.cnn_layers = nn.Sequential(
-            nn.Conv2d(3, 32, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(inplace=True),
-            nn.BatchNorm2d(32),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Dropout(p=0.25),
-            nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(inplace=True),
-            nn.BatchNorm2d(64),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Dropout(p=0.25),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(inplace=True),
-            nn.BatchNorm2d(128),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Dropout(p=0.25),
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(inplace=True),
-            nn.BatchNorm2d(128),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Dropout(p=0.25),
-        )
+        self.vgg16 = vgg16(pretrained=True)
 
-        self.linear_layers = nn.Sequential(
-            nn.Linear(128 * 14 * 14, 512),
-            nn.ReLU(inplace=True),
-            nn.Dropout(),
-            nn.Linear(512, 256),
-            nn.ReLU(inplace=True),
-            nn.Dropout(),
-            nn.Linear(256,10),
-            nn.ReLU(inplace=True),
-            nn.Dropout(),
-            nn.Linear(10,2)
-        )
+        # Modify the classifier part of VGG16
+        # VGG16 has a classifier with 4096 units in the first layer, 4096 in the second, and 1000 output units (for ImageNet classes)
+        # We will replace the last fully connected layer to output 1 unit (for binary classification)
+        self.vgg16.classifier[6] = nn.Linear(4096, 1)
 
-    # Defining the forward pass    
     def forward(self, x):
-        x = self.cnn_layers(x)
-        x = x.view(x.size(0), -1)
-        x = self.linear_layers(x)
+        x = self.vgg16(x)
+        x = torch.sigmoid(x)  # Apply sigmoid activation for binary classification
         return x
