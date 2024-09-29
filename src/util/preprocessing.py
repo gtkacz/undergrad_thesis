@@ -1,4 +1,3 @@
-import cv2
 import numpy as np
 import PIL.Image
 import skimage
@@ -69,7 +68,7 @@ class ChangeColorSpaceTransform(_Preprocess):
                 return_value = skimage.color.rgb2yuv(image)[:, :, 0]
 
             case ColorDomain.YCBCR:
-                return_value = cv2.cvtColor(image, cv2.COLOR_RGB2YCR_CB)[:, :, 0]
+                return_value = skimage.color.rgb2ycbcr(image)[:, :, 0]
 
             case _:
                 raise ValueError(f"Unknown color domain: {self.domain}.")

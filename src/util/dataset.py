@@ -12,7 +12,12 @@ class SkinDiseaseDataset(Dataset):
     and '/dataset/diseased' for diseased skin images.
     """
 
-    def __init__(self, root_dir: str, transform: transforms.Compose | None = None, max_samples: int = 1000):
+    def __init__(
+        self,
+        root_dir: str,
+        transform: transforms.Compose | None = None,
+        max_samples: int = 1000,
+    ):
         """
         Args:
             root_dir (str): The root directory of the dataset.
@@ -24,11 +29,11 @@ class SkinDiseaseDataset(Dataset):
         self.labels = []
         self.image_paths = []
 
-        for label, condition in enumerate(['healthy', 'diseased']):
+        for label, condition in enumerate(["healthy", "diseased"]):
             condition_path = os.path.join(self.root_dir, condition)
 
             for filename in os.listdir(condition_path):
-                if filename.split('.')[-1] not in ['jpg', 'jpeg', 'png']:
+                if filename.split(".")[-1] not in ["jpg", "jpeg", "png"]:
                     continue
 
                 self.image_paths.append(os.path.join(condition_path, filename))
@@ -51,7 +56,7 @@ class SkinDiseaseDataset(Dataset):
 
         label = self.labels[idx]
 
-        image = Image.open(img_path).convert('RGB')
+        image = Image.open(img_path).convert("RGB")
 
         if self.transform:
             image = self.transform(image)

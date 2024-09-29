@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-from torchvision.models import vgg16
+
+torch.backends.cudnn.benchmark = True
 
 
 class BinaryCNN(nn.Module):
@@ -13,16 +14,66 @@ class BinaryCNN(nn.Module):
         self.device = device or torch.device(
             "cuda" if torch.cuda.is_available() else "cpu"
         )
-        self.to(self.device)
+        print(f"Using device: {self.device}")
+        # Convolutional layer block 1
+        self.conv1 = nn.Sequential(
+            nn.Conv2d(
+                3, 32, kernel_size=3, padding=1
+            ),  # Convolutional layer with 32 filters
+            nn.BatchNorm2d(32),  # Batch normalization
+            nn.ReLU(),  # ReLU activation function
+            nn.MaxPool2d(2),  # Max pooling with 2x2 window
+        )
 
-        self.vgg16 = vgg16(pretrained=True)
+        # Convolutional layer block 2
+        self.conv2 = nn.Sequential(
+            nn.Conv2d(
+                32, 64, kernel_size=3, padding=1
+            ),  # Convolutional layer with 64 filters
+            nn.BatchNorm2d(64),  # Batch normalization
+            nn.ReLU(),  # ReLU activation function
+            nn.MaxPool2d(2),  # Max pooling with 2x2 window
+        )
 
-        # Modify the classifier part of VGG16
-        # VGG16 has a classifier with 4096 units in the first layer, 4096 in the second, and 1000 output units (for ImageNet classes)
-        # We will replace the last fully connected layer to output 1 unit (for binary classification)
-        self.vgg16.classifier[6] = nn.Linear(4096, 1)
+        # Convolutional layer block 3
+        self.conv3 = nn.Sequential(
+            nn.Conv2d(
+                64, 128, kernel_size=3, padding=1
+            ),  # Convolutional layer with 128 filters
+            nn.BatchNorm2d(128),  # Batch normalization
+            nn.ReLU(),  # ReLU activation function
+            nn.MaxPool2d(2),  # Max pooling with 2x2 window
+        )
+
+        # Convolutional layer block 4
+        self.conv4 = nn.Sequential(
+            nn.Conv2d(
+                128, 256, kernel_size=3, padding=1
+            ),  # Convolutional layer with 256 filters
+            nn.BatchNorm2d(256),  # Batch normalization
+            nn.ReLU(),  # ReLU activation function
+            nn.MaxPool2d(2),  # Max pooling with 2x2 window
+        )
+
+        # Fully connected layers
+        self.fc_layers = nn.Sequential(
+            nn.Linear(
+                256 * 8 * 8, 512
+            ),  # Adjusted input size after conv layers for 512x512 input
+            nn.ReLU(),  # ReLU activation function
+            nn.Linear(512, 256),  # Fully connected layer with 256 units
+            nn.ReLU(),  # ReLU activation function
+            nn.Linear(256, 1),  # Binary output (1 unit)
+            nn.Sigmoid(),  # Sigmoid activation for binary classification
+        )
 
     def forward(self, x):
-        x = self.vgg16(x)
-        x = torch.sigmoid(x)  # Apply sigmoid activation for binary classification
+        x = self.conv1(x)  # Apply first convolutional block
+        x = self.conv2(x)  # Apply second convolutional block
+        x = self.conv3(x)  # Apply third convolutional block
+        x = self.conv4(x)  # Apply fourth convolutional block
+        x = x.view(
+            -1, 256 * 8 * 8
+        )  # Flatten the tensor to prepare for fully connected layers
+        x = self.fc_layers(x)  # Apply fully connected layers
         return x

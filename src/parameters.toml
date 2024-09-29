@@ -2,10 +2,10 @@
 healthy_skin_path = './dataset/healthy/'
 diseased_skin_path = './dataset/diseased/'
 training_dataset_ratio = 0.8
-precision_threshold = 0.9
-num_epochs = 15
-num_workers = 10
-batch_size = 64
-learning_rate = 0.000075
+precision_threshold = 0.8
+num_epochs = 3
+num_workers = 12
+batch_size = 128
+learning_rate = 0.0001
 shuffle = true
 pin_memory = true

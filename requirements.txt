@@ -1,8 +1,10 @@
-scikit-image==0.22.0
-matplotlib==3.8.4
-jupyter==1.0.0
-torch torchvision --index-url https://download.pytorch.org/whl/cu124
-opencv-python==4.9.0.80
-loguru==0.7.2
-datasets==2.19.0
+scikit-image~=0.24.0
+matplotlib~=3.8.4
+jupyter~=1.0.0
+opencv-python~=4.9.0.80
+loguru~=0.7.2
+datasets~=2.19.0
 pynimbar>=1.1.1
+-i https://download.pytorch.org/whl/cu124
+torch
+torchvision
