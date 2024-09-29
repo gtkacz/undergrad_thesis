@@ -14,7 +14,10 @@ class BinaryCNN(nn.Module):
         self.device = device or torch.device(
             "cuda" if torch.cuda.is_available() else "cpu"
         )
+        self.to(self.device)
+
         print(f"Using device: {self.device}")
+
         # Convolutional layer block 1
         self.conv1 = nn.Sequential(
             nn.Conv2d(

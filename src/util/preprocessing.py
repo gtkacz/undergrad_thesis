@@ -1,162 +1,94 @@
+import cv2
 import numpy as np
-import PIL.Image
-import skimage
-import torch.nn as nn
-from PIL.Image import Image
-from torch import Tensor
-from torchvision import transforms
-
-from .enums import ColorDomain, DenoisingMethod
+import torchvision.transforms.functional as TF
+from PIL import Image, ImageOps
 
 
-class _Preprocess(nn.Module):
-    @staticmethod
-    def _parse_forward_input(
-        image: np.ndarray | Tensor | Image,
-    ) -> tuple[np.ndarray, type[Tensor | Image]]:
-        return_type = Tensor if isinstance(image, Tensor) else Image
+class NormalizeTransform:
+    def __init__(self, mean=list((0.5,)), std=list((0.5,))):
+        """
+        Args:
+            mean (list or tuple): Sequence of means for each channel.
+            std (list or tuple): Sequence of standard deviations for each channel.
+        """
+        self.mean = mean
+        self.std = std
 
-        if isinstance(image, Tensor):
-            parsed_image = np.array(transforms.ToPILImage()(image))
+    def __call__(self, tensor):
+        """
+        Args:
+            tensor (Tensor): Tensor image of size (C, H, W) to be normalized.
+        Returns:
+            Tensor: Normalized image.
+        """
+        return TF.normalize(tensor, self.mean, self.std)
 
-        elif isinstance(image, Image):
-            parsed_image = np.array(image)
 
-        elif isinstance(image, np.ndarray):
-            assert image.ndim == 3, "Image must be in RGB format."
-            parsed_image = image
+class DenoiseTransform:
+    def __call__(self, img):
+        """
+        Args:
+            img (PIL Image): Input image to be denoised.
+        Returns:
+            PIL Image: Denoised image.
+        """
+        # Convert PIL Image to NumPy array
+        img_array = np.array(img)
+        # Convert RGB to BGR for OpenCV
+        img_array = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+        # Apply denoising
+        denoised_array = cv2.fastNlMeansDenoisingColored(
+            img_array, None, h=10, hColor=10, templateWindowSize=7, searchWindowSize=21
+        )
+        # Convert back to RGB
+        denoised_array = cv2.cvtColor(denoised_array, cv2.COLOR_BGR2RGB)
+        # Convert back to PIL Image
+        return Image.fromarray(denoised_array)
 
+
+class ColorSpaceTransform:
+    def __init__(self, color_space):
+        """
+        Args:
+            color_space (str): Target color space ('GRAY', 'RGB', 'HSV').
+        """
+        self.color_space = color_space
+
+    def __call__(self, img):
+        """
+        Args:
+            img (PIL Image): Input image.
+        Returns:
+            PIL Image: Image converted to the target color space.
+        """
+        if self.color_space == "GRAY":
+            return img.convert("L")
+        elif self.color_space == "RGB":
+            return img.convert("RGB")
+        elif self.color_space == "HSV":
+            return img.convert("HSV")
         else:
-            raise ValueError(f"Unknown image type: {type(image)}.")
-
-        return parsed_image, return_type
+            raise ValueError(f"Color space '{self.color_space}' not supported.")
 
 
-class ChangeColorSpaceTransform(_Preprocess):
-    def __init__(self, domain: ColorDomain):
-        super().__init__()
-        self.domain = domain
-
-    def forward(self, image: np.ndarray | Tensor | Image) -> Tensor | Image:
+class EqualizationTransform:
+    def __call__(self, img):
         """
-        Change the color space of an image.
-
         Args:
-            image (np.ndarray): The image to change the color space of as a numpy array.
-
-        Raises:
-            ValueError: If the image is not in RGB format or if an unknown color domain is provided.
-
+            img (PIL Image): Input image.
         Returns:
-            np.ndarray: The image in the new color space as a numpy array.
+            PIL Image: Image after histogram equalization.
         """
-        image, return_type = self._parse_forward_input(image)
+        if img.mode != "RGB":
+            # For grayscale images
+            return ImageOps.equalize(img)
 
-        return_value = None
+        # Split into individual channels
+        r, g, b = img.split()
 
-        match self.domain:
-            case ColorDomain.GRAYSCALE:
-                return_value = skimage.color.rgb2gray(image)
+        # Equalize each channel
+        r_eq = ImageOps.equalize(r)
+        g_eq = ImageOps.equalize(g)
+        b_eq = ImageOps.equalize(b)
 
-            case ColorDomain.HSV:
-                return_value = skimage.color.rgb2hsv(image)[:, :, 2]
-
-            case ColorDomain.LAB:
-                return_value = skimage.color.rgb2lab(image)[:, :, 0]
-
-            case ColorDomain.YUV:
-                return_value = skimage.color.rgb2yuv(image)[:, :, 0]
-
-            case ColorDomain.YCBCR:
-                return_value = skimage.color.rgb2ycbcr(image)[:, :, 0]
-
-            case _:
-                raise ValueError(f"Unknown color domain: {self.domain}.")
-
-        return (
-            PIL.Image.fromarray(return_value)
-            if return_type == Image
-            else transforms.ToTensor()(PIL.Image.fromarray(return_value))
-        )
-
-
-class DenoiseTransform(_Preprocess):
-    def __init__(self, method: DenoisingMethod):
-        super().__init__()
-        self.method = method
-
-    def forward(self, image: np.ndarray | Tensor | Image) -> Tensor | Image:
-        """
-        Denoise an image.
-
-        Args:
-            image (np.ndarray): The image to denoise as a numpy array.
-
-        Returns:
-            np.ndarray: The denoised image as a numpy array.
-        """
-        image, return_type = self._parse_forward_input(image)
-
-        return_value = None
-
-        match self.method:
-            case DenoisingMethod.CHAMBOLLE:
-                return_value = skimage.restoration.denoise_tv_chambolle(
-                    image, weight=0.1
-                )
-
-            case DenoisingMethod.BILATERAL:
-                return_value = skimage.restoration.denoise_bilateral(
-                    image[:, :, :3], sigma_color=0.05, sigma_spatial=15
-                )
-
-            case DenoisingMethod.WAVELET:
-                return_value = skimage.restoration.denoise_wavelet(image)
-
-            case DenoisingMethod.NL_MEANS:
-                return_value = skimage.restoration.denoise_nl_means(image, h=0.05)
-
-            case DenoisingMethod.MEDIAN:
-                return_value = skimage.filters.median(image)
-
-            case DenoisingMethod.MEAN:
-                return_value = skimage.filters.rank.mean(
-                    image, skimage.morphology.disk(1)
-                )
-
-            case DenoisingMethod.GAUSSIAN:
-                return_value = skimage.filters.gaussian(image)
-
-            case _:
-                raise ValueError(f"Unknown denoize method: {self.method}")
-
-        return (
-            PIL.Image.fromarray(return_value)
-            if return_type == Image
-            else transforms.ToTensor()(PIL.Image.fromarray(return_value))
-        )
-
-
-class NormalizeTransform(_Preprocess):
-    def __init__(self):
-        super().__init__()
-
-    def forward(self, image: np.ndarray | Tensor | Image) -> Tensor | Image:
-        """
-        Normalize an image.
-
-        Args:
-            image (np.ndarray): The image to normalize as a numpy array.
-
-        Returns:
-            np.ndarray: The normalized image as a numpy array.
-        """
-        image, return_type = self._parse_forward_input(image)
-
-        return_value = (image - np.min(image)) / (np.max(image) - np.min(image))
-
-        return (
-            PIL.Image.fromarray(return_value)
-            if return_type == Image
-            else transforms.ToTensor()(PIL.Image.fromarray(return_value))
-        )
+        return Image.merge("RGB", (r_eq, g_eq, b_eq))
