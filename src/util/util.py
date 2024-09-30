@@ -1,8 +1,10 @@
 import copy
 import os
 import sys
+import tomllib
 from functools import wraps
 from time import time as timer
+from typing import Sequence
 
 import numpy as np
 import torch
@@ -12,8 +14,15 @@ from skimage import io
 from torch import Tensor
 from torch import device as torchdevice
 from torch.utils.data import DataLoader, Dataset, Subset
+from torchvision import transforms
 
-from .types import LossFunction, TestingDataset, TrainingDataset, ValidationDataset
+from .cnn import BinaryCNN
+from .dataset import SkinDiseaseDataset
+from .types import (LossFunction, TestingDataset, TrainingDataset,
+                    ValidationDataset)
+
+with open("./src/parameters.toml", "r") as f:
+    parameters = tomllib.loads(f.read())
 
 
 def __use_parameters_by_value(func):
@@ -366,7 +375,7 @@ def evaluate(
         if val_accuracy > best_val_accuracy:
             best_val_accuracy = val_accuracy
             print(
-                f"Best model saved at epoch {epoch+1} with Validation Accuracy: {val_accuracy*100:.2f}%"
+                f"Best model at epoch {epoch+1} with Validation Accuracy: {val_accuracy*100:.2f}%"
             )
 
     # Calculate and print training duration
@@ -420,3 +429,93 @@ def evaluate(
     print(f"Test Accuracy of the Binary Classification Model: {test_accuracy*100:.2f}%")
 
     return test_accuracy
+
+
+def evaluate_model(
+    device: torch.device,
+    train_loader: DataLoader,
+    test_loader: DataLoader,
+    validation_loader: DataLoader,
+    criterion: LossFunction = nn.MSELoss(),
+    optimizer_class: type[optim.Optimizer] = optim.Adam,
+    learning_rate: float = parameters["TRAINING"]["learning_rate"],
+    verbose: bool = True
+) -> float:
+    """
+    This function evaluates the model using the given criterion and data loaders.
+
+    Args:
+        device (torch.device): The device to use for the evaluation.
+        train_loader (DataLoader): The training data loader.
+        test_loader (DataLoader): The testing data loader.
+        validation_loader (DataLoader): The validation data loader.
+        criterion (LossFunction, optional): The loss function to use for evaluation. Defaults to nn.MSELoss().
+        optimizer_class (type[optim.Optimizer], optional): The optimizer class to use for the evaluation. Defaults to optim.Adam.
+        learning_rate (float, optional): The learning rate to use for the optimizer. Defaults to parameters["TRAINING"]["learning_rate"].
+        verbose (bool, optional): Whether to print verbose output during evaluation. Defaults to True.
+
+    Returns:
+        float: The precision of the model.
+    """
+    criterion = criterion.to(device)
+
+    model = BinaryCNN(device=device).to(device)
+    optimizer = optimizer_class(model.parameters(), lr=learning_rate)  # type: ignore
+
+    return evaluate(
+        model=model,
+        criterion=criterion,
+        device=device,
+        verbose=verbose,
+        optimizer=optimizer,
+        train_loader=train_loader,
+        test_loader=test_loader,
+        validation_loader=validation_loader,
+        num_epochs=parameters["TRAINING"]["num_epochs"],
+    )
+
+
+def get_model_data(
+    to_transforms: Sequence[nn.Module | object] = list(),
+    training_ratio: float = 0.8,
+    testing_ratio: float = 0.1,
+    validation_ratio: float = 0.1,
+    seed: int = 47
+) -> tuple[
+    DataLoader,
+    DataLoader,
+    DataLoader,
+]:
+    """
+    This function returns the training and testing data loaders and datasets for the skin disease dataset.
+
+    Args:
+        to_transforms (Sequence[nn.Module], optional): A sequence of transforms to apply to the dataset. Defaullts to an empty sequence.
+
+    Returns:
+        dict[str, dict[str, DataLoader | SkinDiseaseDataset]]: A dictionary containing the training and testing data loaders and datasets.
+    """
+    base_transforms = [transforms.Resize((128, 128)), transforms.ToTensor()]
+    transform = transforms.Compose([*base_transforms, *to_transforms])
+
+    loader_kwargs = {
+        "batch_size": parameters["TRAINING"]["batch_size"],
+        "shuffle": parameters["TRAINING"]["shuffle"],
+        "num_workers": parameters["TRAINING"]["num_workers"],
+        "pin_memory": parameters["TRAINING"]["pin_memory"],
+    }
+
+    base_dataset = SkinDiseaseDataset(root_dir="src/dataset", transform=transform)
+    train_dataset, test_dataset, validation_dataset = split_datasets(
+        base_dataset, training_ratio, testing_ratio, validation_ratio, seed
+    )
+
+    train_loader = DataLoader(train_dataset, **loader_kwargs)
+    test_loader = DataLoader(test_dataset, **loader_kwargs)
+    validation_loader = DataLoader(validation_dataset, **loader_kwargs)
+
+    return (
+        train_loader,
+        test_loader,
+        validation_loader,
+    )

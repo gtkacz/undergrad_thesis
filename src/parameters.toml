@@ -9,3 +9,8 @@ batch_size = 128
 learning_rate = 0.0001
 shuffle = true
 pin_memory = true
+resize_dim = 128
+
+[PREPROCESS]
+normalize.mean = 0.4
+normalize.std = 0.2
