@@ -373,9 +373,6 @@ def evaluate(
         # Save the model with the best validation accuracy
         if val_accuracy > best_val_accuracy:
             best_val_accuracy = val_accuracy
-            print(
-                f"Best model at epoch {epoch+1} with Validation Accuracy: {val_accuracy*100:.2f}%"
-            )
 
     # Calculate and print training duration
     training_duration = timer() - start_time
