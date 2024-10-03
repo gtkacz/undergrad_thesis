@@ -28,7 +28,7 @@ def process_combination(template_window_size, search_window_size, device):
     del denoise_test_loader
     del denoise_validation_loader
     torch.cuda.empty_cache()
-    print(f'P: {denoise_precision}')
+    print(f"P: {denoise_precision}")
 
     return {
         "template_window_size": template_window_size,
