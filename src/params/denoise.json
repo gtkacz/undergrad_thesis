@@ -1,0 +1,127 @@
+[
+    {
+        "template_window_size": 5,
+        "search_window_size": 19,
+        "precision": 0.945
+    },
+    {
+        "template_window_size": 5,
+        "search_window_size": 20,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 5,
+        "search_window_size": 21,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 6,
+        "search_window_size": 19,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 6,
+        "search_window_size": 20,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 6,
+        "search_window_size": 21,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 6,
+        "search_window_size": 22,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 6,
+        "search_window_size": 23,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 7,
+        "search_window_size": 19,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 7,
+        "search_window_size": 20,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 7,
+        "search_window_size": 21,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 7,
+        "search_window_size": 22,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 7,
+        "search_window_size": 23,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 8,
+        "search_window_size": 22,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 8,
+        "search_window_size": 23,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 9,
+        "search_window_size": 20,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 9,
+        "search_window_size": 21,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 9,
+        "search_window_size": 22,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 9,
+        "search_window_size": 23,
+        "precision": 0.94
+    },
+    {
+        "template_window_size": 5,
+        "search_window_size": 22,
+        "precision": 0.935
+    },
+    {
+        "template_window_size": 5,
+        "search_window_size": 23,
+        "precision": 0.935
+    },
+    {
+        "template_window_size": 8,
+        "search_window_size": 20,
+        "precision": 0.935
+    },
+    {
+        "template_window_size": 8,
+        "search_window_size": 21,
+        "precision": 0.935
+    },
+    {
+        "template_window_size": 9,
+        "search_window_size": 19,
+        "precision": 0.935
+    },
+    {
+        "template_window_size": 8,
+        "search_window_size": 19,
+        "precision": 0.93
+    }
+]

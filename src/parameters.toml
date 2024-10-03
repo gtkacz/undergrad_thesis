@@ -14,3 +14,5 @@ resize_dim = 128
 [PREPROCESS]
 normalize.mean = 0.4
 normalize.std = 0.2
+denoise.template_window_size = 5
+denoise.search_window_size = 19

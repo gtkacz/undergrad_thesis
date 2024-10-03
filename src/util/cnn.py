@@ -16,7 +16,7 @@ class BinaryCNN(nn.Module):
         )
         self.to(self.device)
 
-        print(f"Using device: {self.device}")
+        # print(f"Using device: {self.device}")
 
         # Convolutional layer block 1
         self.conv1 = nn.Sequential(

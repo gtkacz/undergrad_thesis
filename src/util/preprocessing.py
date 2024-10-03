@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
+import torch.nn as nn
 import torchvision.transforms.functional as TF
-from PIL import Image, ImageOps
 
 
 class NormalizeTransform:
@@ -24,71 +24,88 @@ class NormalizeTransform:
         return TF.normalize(tensor, self.mean, self.std)
 
 
-class DenoiseTransform:
-    def __call__(self, img):
-        """
-        Args:
-            img (PIL Image): Input image to be denoised.
-        Returns:
-            PIL Image: Denoised image.
-        """
-        # Convert PIL Image to NumPy array
-        img_array = np.array(img)
-        # Convert RGB to BGR for OpenCV
-        img_array = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
-        # Apply denoising
-        denoised_array = cv2.fastNlMeansDenoisingColored(
-            img_array, None, h=10, hColor=10, templateWindowSize=7, searchWindowSize=21
-        )
-        # Convert back to RGB
-        denoised_array = cv2.cvtColor(denoised_array, cv2.COLOR_BGR2RGB)
-        # Convert back to PIL Image
-        return Image.fromarray(denoised_array)
+class DenoiseTransform(nn.Module):
+    """
+    Apply denoising to the input image using Non-Local Means Denoising algorithm.
+    """
 
+    def __init__(self, h=10, template_window_size=7, search_window_size=21):
+        super().__init__()
+        self.h = h
+        self.template_window_size = template_window_size
+        self.search_window_size = search_window_size
 
-class ColorSpaceTransform:
-    def __init__(self, color_space):
-        """
-        Args:
-            color_space (str): Target color space ('GRAY', 'RGB', 'HSV').
-        """
-        self.color_space = color_space
+    def forward(self, img):
+        if not isinstance(img, np.ndarray):
+            img = TF.to_pil_image(img)
+            img = np.array(img)
 
-    def __call__(self, img):
-        """
-        Args:
-            img (PIL Image): Input image.
-        Returns:
-            PIL Image: Image converted to the target color space.
-        """
-        if self.color_space == "GRAY":
-            return img.convert("L")
-        elif self.color_space == "RGB":
-            return img.convert("RGB")
-        elif self.color_space == "HSV":
-            return img.convert("HSV")
+        if len(img.shape) == 3 and img.shape[2] == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            denoised = cv2.fastNlMeansDenoisingColored(
+                img,
+                None,
+                self.h,
+                self.h,
+                self.template_window_size,
+                self.search_window_size,
+            )
+            denoised = cv2.cvtColor(denoised, cv2.COLOR_BGR2RGB)
         else:
-            raise ValueError(f"Color space '{self.color_space}' not supported.")
+            denoised = cv2.fastNlMeansDenoising(
+                img, None, self.h, self.template_window_size, self.search_window_size
+            )
+
+        return TF.to_tensor(denoised)
 
 
-class EqualizationTransform:
-    def __call__(self, img):
-        """
-        Args:
-            img (PIL Image): Input image.
-        Returns:
-            PIL Image: Image after histogram equalization.
-        """
-        if img.mode != "RGB":
-            # For grayscale images
-            return ImageOps.equalize(img)
+class ChangeColorSpaceTransform(nn.Module):
+    """
+    Change the color space of the input image.
+    Supported color spaces: 'RGB', 'BGR', 'HSV', 'LAB'
+    """
 
-        # Split into individual channels
-        r, g, b = img.split()
+    def __init__(self, source_space="RGB", target_space="HSV"):
+        super().__init__()
+        self.source_space = source_space
+        self.target_space = target_space
 
-        # Equalize each channel
-        r_eq = ImageOps.equalize(r)
-        g_eq = ImageOps.equalize(g)
-        b_eq = ImageOps.equalize(b)
+    def forward(self, img):
+        if not isinstance(img, np.ndarray):
+            img = TF.to_pil_image(img)
+            img = np.array(img)
 
-        return Image.merge("RGB", (r_eq, g_eq, b_eq))
+        if self.source_space == "RGB" and self.target_space == "HSV":
+            converted = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+        elif self.source_space == "RGB" and self.target_space == "LAB":
+            converted = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
+        elif self.source_space == "HSV" and self.target_space == "RGB":
+            converted = cv2.cvtColor(img, cv2.COLOR_HSV2RGB)
+        elif self.source_space == "LAB" and self.target_space == "RGB":
+            converted = cv2.cvtColor(img, cv2.COLOR_LAB2RGB)
+        else:
+            raise ValueError(
+                f"Unsupported color space conversion: {self.source_space} to {self.target_space}"
+            )
+
+        return TF.to_tensor(converted)
+
+
+class EqualizationTransform(nn.Module):
+    """
+    Apply histogram equalization to the input image.
+    """
+
+    def forward(self, img):
+        if not isinstance(img, np.ndarray):
+            img = TF.to_pil_image(img)
+            img = np.array(img)
+
+        if len(img.shape) == 3 and img.shape[2] == 3:
+            img_yuv = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
+            img_yuv[:, :, 0] = cv2.equalizeHist(img_yuv[:, :, 0])
+            equalized = cv2.cvtColor(img_yuv, cv2.COLOR_YUV2RGB)
+        else:
+            equalized = cv2.equalizeHist(img)
+
+        return TF.to_tensor(equalized)

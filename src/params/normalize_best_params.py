@@ -5,16 +5,24 @@ import torch
 from numpy import arange
 from pynimbar import loading_animation
 
-from src.util import NormalizeTransform, evaluate_model, get_model_data
+from util import NormalizeTransform, evaluate_model, get_model_data
 
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     results = []
 
-    for mean in arange(0.2, 1, 0.2):
-        for std in arange(0.2, 1, 0.2):
-            with loading_animation(f'Running with mean: {mean}, std: {std}...', break_on_error=True, verbose_errors=True, time_it_live=True):
+    for mean in arange(0.15, 1, 0.15):
+        for std in arange(0.15, 1, 0.15):
+            mean = round(mean, 2)
+            std = round(std, 2)
+
+            with loading_animation(
+                f"Running with mean: {mean}, std: {std}...",
+                break_on_error=True,
+                verbose_errors=True,
+                time_it_live=True,
+            ):
                 (
                     normalize_train_loader,
                     normalize_test_loader,
@@ -31,7 +39,6 @@ def main():
 
                 result = {"mean": mean, "std": std, "precision": normalize_precision}
                 results.append(result)
-                pprint(result)
 
     results.sort(key=lambda x: x["precision"], reverse=True)
     pprint(results)

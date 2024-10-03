@@ -1,6 +1,5 @@
 import copy
 import os
-import sys
 import tomllib
 from functools import wraps
 from time import time as timer
@@ -18,10 +17,9 @@ from torchvision import transforms
 
 from .cnn import BinaryCNN
 from .dataset import SkinDiseaseDataset
-from .types import (LossFunction, TestingDataset, TrainingDataset,
-                    ValidationDataset)
+from .types import LossFunction, TestingDataset, TrainingDataset, ValidationDataset
 
-with open("./src/parameters.toml", "r") as f:
+with open("parameters.toml", "r") as f:
     parameters = tomllib.loads(f.read())
 
 
@@ -280,7 +278,8 @@ def evaluate(
     verbose: bool = True,
 ) -> float:
     if not verbose:
-        sys.stdout = open(os.devnull, "w")
+        global print
+        print = lambda *args, **kwargs: None
 
     # Variables to track best model and plot metrics
     best_val_accuracy = 0.0  # To track the best validation accuracy
@@ -439,7 +438,7 @@ def evaluate_model(
     criterion: LossFunction = nn.MSELoss(),
     optimizer_class: type[optim.Optimizer] = optim.Adam,
     learning_rate: float = parameters["TRAINING"]["learning_rate"],
-    verbose: bool = True
+    verbose: bool = True,
 ) -> float:
     """
     This function evaluates the model using the given criterion and data loaders.
@@ -480,7 +479,7 @@ def get_model_data(
     training_ratio: float = 0.8,
     testing_ratio: float = 0.1,
     validation_ratio: float = 0.1,
-    seed: int = 47
+    seed: int = 47,
 ) -> tuple[
     DataLoader,
     DataLoader,
@@ -505,7 +504,7 @@ def get_model_data(
         "pin_memory": parameters["TRAINING"]["pin_memory"],
     }
 
-    base_dataset = SkinDiseaseDataset(root_dir="src/dataset", transform=transform)
+    base_dataset = SkinDiseaseDataset(root_dir="dataset", transform=transform)
     train_dataset, test_dataset, validation_dataset = split_datasets(
         base_dataset, training_ratio, testing_ratio, validation_ratio, seed
     )
