@@ -28,7 +28,6 @@ def process_combination(template_window_size, search_window_size, device):
     del denoise_test_loader
     del denoise_validation_loader
     torch.cuda.empty_cache()
-    print(f"P: {denoise_precision}")
 
     return {
         "template_window_size": template_window_size,
@@ -56,7 +55,7 @@ def main():
     results.sort(key=lambda x: x["precision"], reverse=True)
     pprint(results)
 
-    with open("./src/params/denoise.json", "w") as f:
+    with open("./src/params/denoise.json", "w+") as f:
         f.write(dumps(results))
 
 

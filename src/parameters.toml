@@ -16,3 +16,5 @@ normalize.mean = 0.4
 normalize.std = 0.2
 denoise.template_window_size = 5
 denoise.search_window_size = 19
+colorspace.source_space = 'RGB'
+colorspace.target_space = 'HSV'

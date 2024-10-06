@@ -59,10 +59,10 @@ class DenoiseTransform(nn.Module):
         return TF.to_tensor(denoised)
 
 
-class ChangeColorSpaceTransform(nn.Module):
+class ColorSpaceTransform(nn.Module):
     """
     Change the color space of the input image.
-    Supported color spaces: 'RGB', 'BGR', 'HSV', 'LAB'
+    Supported color spaces: 'RGB', 'BGR', 'HSV', 'LAB', 'YUV'
     """
 
     def __init__(self, source_space="RGB", target_space="HSV"):
@@ -83,6 +83,12 @@ class ChangeColorSpaceTransform(nn.Module):
             converted = cv2.cvtColor(img, cv2.COLOR_HSV2RGB)
         elif self.source_space == "LAB" and self.target_space == "RGB":
             converted = cv2.cvtColor(img, cv2.COLOR_LAB2RGB)
+        elif self.source_space == "RGB" and self.target_space == "BGR":
+            converted = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+        elif self.source_space == "BGR" and self.target_space == "RGB":
+            converted = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        elif self.source_space == "RGB" and self.target_space == "YUV":
+            converted = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
         else:
             raise ValueError(
                 f"Unsupported color space conversion: {self.source_space} to {self.target_space}"

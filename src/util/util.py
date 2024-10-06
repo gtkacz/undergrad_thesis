@@ -360,8 +360,8 @@ def evaluate(
         # Print metrics for this epoch
         print(
             f"Epoch {epoch+1}/{num_epochs}, "
-            f"Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy*100:.2f}%, "
-            f"Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy*100:.2f}%"
+            f"Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy*100:.1f}%, "
+            f"Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy*100:.1f}%"
         )
 
         # Save losses and accuracies for plotting
@@ -377,7 +377,7 @@ def evaluate(
     # Calculate and print training duration
     training_duration = timer() - start_time
     training_duration_minutes = training_duration / 60  # Convert duration to minutes
-    print(f"Total training duration: {training_duration_minutes:.2f} minutes")
+    print(f"Total training duration: {training_duration_minutes:.1f} minutes")
 
     model.eval()  # Set the model to evaluation mode (disables dropout, batch norm updates, etc.)
 
@@ -422,7 +422,7 @@ def evaluate(
     test_accuracy = test_running_corrects / total_test_samples
 
     # Print the accuracy of the binary classification model on the test set
-    print(f"Test Accuracy of the Binary Classification Model: {test_accuracy*100:.2f}%")
+    print(f"Test Accuracy of the Binary Classification Model: {test_accuracy*100:.1f}%")
 
     return test_accuracy
 

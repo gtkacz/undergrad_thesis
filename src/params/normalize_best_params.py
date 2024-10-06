@@ -1,3 +1,4 @@
+import itertools
 from json import dumps
 from pprint import pprint
 
@@ -5,45 +6,60 @@ import torch
 from numpy import arange
 from pynimbar import loading_animation
 
-from util import NormalizeTransform, evaluate_model, get_model_data
+from util import DenoiseTransform, evaluate_model, get_model_data
+
+
+def process_combination(mean, std, device):
+    (
+        denoise_train_loader,
+        denoise_test_loader,
+        denoise_validation_loader,
+    ) = get_model_data([DenoiseTransform(mean, std)])
+
+    denoise_precision = evaluate_model(
+        device,
+        denoise_train_loader,
+        denoise_test_loader,
+        denoise_validation_loader,
+        verbose=False,
+    )
+
+    # Free up memory
+    del denoise_train_loader
+    del denoise_test_loader
+    del denoise_validation_loader
+    torch.cuda.empty_cache()
+
+    return {
+        "mean": mean,
+        "std": std,
+        "precision": denoise_precision,
+    }
 
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     results = []
 
-    for mean in arange(0.15, 1, 0.15):
-        for std in arange(0.15, 1, 0.15):
-            mean = round(mean, 2)
-            std = round(std, 2)
+    combinations = list(itertools.product(arange(0.15, 1, 0.15), arange(0.15, 1, 0.15)))
 
-            with loading_animation(
-                f"Running with mean: {mean}, std: {std}...",
-                break_on_error=True,
-                verbose_errors=True,
-                time_it_live=True,
-            ):
-                (
-                    normalize_train_loader,
-                    normalize_test_loader,
-                    normalize_validation_loader,
-                ) = get_model_data([NormalizeTransform(mean, std)])
+    for mean, std in combinations:
+        mean = round(mean, 2)
+        std = round(std, 2)
 
-                normalize_precision = evaluate_model(
-                    device,
-                    normalize_train_loader,
-                    normalize_test_loader,
-                    normalize_validation_loader,
-                    verbose=False,
-                )
-
-                result = {"mean": mean, "std": std, "precision": normalize_precision}
-                results.append(result)
+        with loading_animation(
+            f"Running with mean: {mean}, std: {std}...",
+            break_on_error=True,
+            verbose_errors=True,
+            time_it_live=True,
+        ):
+            result = process_combination(t, s, device)
+            results.append(result)
 
     results.sort(key=lambda x: x["precision"], reverse=True)
     pprint(results)
 
-    with open("./src/params/normalize.json", "w") as f:
+    with open("./src/params/denoise.json", "w+") as f:
         f.write(dumps(results))
 
 
