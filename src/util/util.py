@@ -17,7 +17,13 @@ from torchvision import transforms
 
 from .cnn import BinaryCNN
 from .dataset import SkinDiseaseDataset
-from .types import LossFunction, TestingDataset, TrainingDataset, ValidationDataset
+from .types import (
+    ConfusionMatrix,
+    LossFunction,
+    TestingDataset,
+    TrainingDataset,
+    ValidationDataset,
+)
 
 with open("parameters.toml", "r") as f:
     parameters = tomllib.loads(f.read())
@@ -266,6 +272,7 @@ def train_and_evaluate_model(
     return accuracy
 
 
+# @__use_parameters_by_value
 def evaluate(
     model: nn.Module,
     optimizer,
@@ -276,7 +283,7 @@ def evaluate(
     device: torchdevice = torchdevice("cpu"),
     num_epochs: int = 10,
     verbose: bool = True,
-) -> float:
+) -> tuple[float, ConfusionMatrix]:
     if not verbose:
         global print
         print = lambda *args, **kwargs: None
@@ -388,6 +395,7 @@ def evaluate(
     # Lists to store predictions and true labels
     all_preds = []
     all_labels = []
+    confusion_matrix = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
 
     # Perform testing without gradient calculations
     with torch.no_grad():  # Disable gradient tracking to save memory and computation
@@ -403,6 +411,11 @@ def evaluate(
             preds = (
                 outputs > 0.5
             ).float()  # Apply threshold to get binary predictions (0 or 1)
+
+            confusion_matrix["TP"] += torch.sum((preds == 1) & (labels == 1)).item()
+            confusion_matrix["TN"] += torch.sum((preds == 0) & (labels == 0)).item()
+            confusion_matrix["FP"] += torch.sum((preds == 1) & (labels == 0)).item()
+            confusion_matrix["FN"] += torch.sum((preds == 0) & (labels == 1)).item()
 
             # Update counters with the number of correct predictions
             test_running_corrects += torch.sum(
@@ -424,9 +437,10 @@ def evaluate(
     # Print the accuracy of the binary classification model on the test set
     print(f"Test Accuracy of the Binary Classification Model: {test_accuracy*100:.1f}%")
 
-    return test_accuracy
+    return test_accuracy, confusion_matrix
 
 
+# @__use_parameters_by_value
 def evaluate_model(
     device: torch.device,
     train_loader: DataLoader,
@@ -436,7 +450,7 @@ def evaluate_model(
     optimizer_class: type[optim.Optimizer] = optim.Adam,
     learning_rate: float = parameters["TRAINING"]["learning_rate"],
     verbose: bool = True,
-) -> float:
+) -> tuple[float, ConfusionMatrix]:
     """
     This function evaluates the model using the given criterion and data loaders.
 
@@ -451,14 +465,14 @@ def evaluate_model(
         verbose (bool, optional): Whether to print verbose output during evaluation. Defaults to True.
 
     Returns:
-        float: The precision of the model.
+        Tuple[float, ConfusionMatrix]: The test accuracy and a dictionary representing the confusion matrix.
     """
     criterion = criterion.to(device)
 
     model = BinaryCNN(device=device).to(device)
     optimizer = optimizer_class(model.parameters(), lr=learning_rate)  # type: ignore
 
-    return evaluate(
+    test_accuracy, confusion_matrix = evaluate(
         model=model,
         criterion=criterion,
         device=device,
@@ -469,6 +483,8 @@ def evaluate_model(
         validation_loader=validation_loader,
         num_epochs=parameters["TRAINING"]["num_epochs"],
     )
+
+    return test_accuracy, confusion_matrix
 
 
 def get_model_data(

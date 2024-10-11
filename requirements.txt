@@ -5,6 +5,7 @@ opencv-python
 loguru
 datasets
 pynimbar
+scikit-learn
 seaborn
 matplotlib
 pandas

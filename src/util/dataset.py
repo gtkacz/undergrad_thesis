@@ -16,7 +16,7 @@ class SkinDiseaseDataset(Dataset):
         self,
         root_dir: str,
         transform: transforms.Compose | None = None,
-        max_samples: int = 1000,
+        max_samples: int = 10_000,
     ):
         """
         Args:
