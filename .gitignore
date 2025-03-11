@@ -170,3 +170,5 @@ _*
 *.jpeg
 *.pptx
 .ruff_cache/
+.qodo
+*.pkl
