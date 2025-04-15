@@ -437,7 +437,7 @@ def evaluate(
     # Print the accuracy of the binary classification model on the test set
     print(f"Test Accuracy of the Binary Classification Model: {test_accuracy*100:.1f}%")
 
-    return test_accuracy, confusion_matrix
+    return test_accuracy, confusion_matrix, training_duration
 
 
 # @__use_parameters_by_value
@@ -450,7 +450,7 @@ def evaluate_model(
     optimizer_class: type[optim.Optimizer] = optim.Adam,
     learning_rate: float = parameters["TRAINING"]["learning_rate"],
     verbose: bool = True,
-) -> tuple[float, ConfusionMatrix]:
+) -> tuple[float, ConfusionMatrix, float]:
     """
     This function evaluates the model using the given criterion and data loaders.
 
@@ -465,14 +465,14 @@ def evaluate_model(
         verbose (bool, optional): Whether to print verbose output during evaluation. Defaults to True.
 
     Returns:
-        Tuple[float, ConfusionMatrix]: The test accuracy and a dictionary representing the confusion matrix.
+        Tuple[float, ConfusionMatrix, float]: The test accuracy, a dictionary representing the confusion matrix and the training time.
     """
     criterion = criterion.to(device)
 
     model = BinaryCNN(device=device).to(device)
     optimizer = optimizer_class(model.parameters(), lr=learning_rate)  # type: ignore
 
-    test_accuracy, confusion_matrix = evaluate(
+    test_accuracy, confusion_matrix, training_time = evaluate(
         model=model,
         criterion=criterion,
         device=device,
@@ -484,7 +484,7 @@ def evaluate_model(
         num_epochs=parameters["TRAINING"]["num_epochs"],
     )
 
-    return test_accuracy, confusion_matrix
+    return test_accuracy, confusion_matrix, training_time
 
 
 def get_model_data(

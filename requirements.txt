@@ -10,5 +10,6 @@ seaborn
 matplotlib
 pandas
 opencv-python>=4.10.0.84
-torch==2.5.1
+-f https://download.pytorch.org/whl/cu124
+torch
 torchvision
