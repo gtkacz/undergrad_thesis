@@ -1,4 +1,5 @@
-from typing import Callable, TypeAlias, TypedDict
+from collections.abc import Callable
+from typing import TypeAlias, TypedDict
 
 from torch import Tensor
 from torch.utils.data import Dataset
@@ -10,7 +11,7 @@ TestingDataset: TypeAlias = Dataset[Tensor]
 
 
 class ConfusionMatrix(TypedDict):
-    true_positives: int
-    true_negatives: int
-    false_positives: int
-    false_negatives: int
+	true_positives: int
+	true_negatives: int
+	false_positives: int
+	false_negatives: int
