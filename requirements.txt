@@ -9,6 +9,8 @@ scikit-learn
 seaborn
 matplotlib
 pandas
+pyperclip
+tabulate
 opencv-python>=4.10.0.84
 -f https://download.pytorch.org/whl/cu124
 torch

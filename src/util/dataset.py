@@ -16,13 +16,13 @@ class SkinDiseaseDataset(Dataset):
 		self,
 		root_dir: str,
 		transform: transforms.Compose | None = None,
-		max_samples: int = 10_000,
+		max_samples: int = 1000,
 	):
 		"""
 		Args:
-		    root_dir (str): The root directory of the dataset.
-		    transform (transforms.Compose, optional): Optional transform to be applied on a sample.
-		    max_samples (int): The maximum number of samples to load from the dataset.
+			root_dir (str): The root directory of the dataset.
+			transform (transforms.Compose, optional): Optional transform to be applied on a sample.
+			max_samples (int): The maximum number of samples to load from the dataset.
 		"""
 		self.root_dir = root_dir
 		self.transform = transform

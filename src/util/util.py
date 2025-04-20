@@ -492,7 +492,11 @@ def get_model_data(
 
 	base_dataset = SkinDiseaseDataset(root_dir="dataset", transform=transform)
 	train_dataset, test_dataset, validation_dataset = split_datasets(
-		base_dataset, training_ratio, testing_ratio, validation_ratio, seed,
+		base_dataset,
+		training_ratio,
+		testing_ratio,
+		validation_ratio,
+		seed,
 	)
 
 	train_loader = DataLoader(train_dataset, **loader_kwargs)
