@@ -59,7 +59,7 @@ def main():
 	results.sort(key=lambda x: x["precision"], reverse=True)
 	pprint(results)
 
-	with open("./src/params/denoise.json", "w+") as f:
+	with open("./src/params/denoise_high_con.json", "w+") as f:
 		f.write(dumps(results))
 
 
