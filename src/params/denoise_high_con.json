@@ -1,0 +1,326 @@
+[
+  {
+    "template_window_size": 6,
+    "search_window_size": 24,
+    "precision": [
+      0.972,
+      { "TP": 365, "TN": 607, "FP": 5, "FN": 23 },
+      1528.1286416053772
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 25,
+    "precision": [
+      0.972,
+      { "TP": 365, "TN": 607, "FP": 5, "FN": 23 },
+      1530.5468227863312
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 20,
+    "precision": [
+      0.971,
+      { "TP": 363, "TN": 608, "FP": 4, "FN": 25 },
+      1259.2550179958344
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 21,
+    "precision": [
+      0.971,
+      { "TP": 363, "TN": 608, "FP": 4, "FN": 25 },
+      1260.9324805736542
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 20,
+    "precision": [
+      0.969,
+      { "TP": 364, "TN": 605, "FP": 7, "FN": 24 },
+      1296.3629972934723
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 21,
+    "precision": [
+      0.969,
+      { "TP": 364, "TN": 605, "FP": 7, "FN": 24 },
+      1282.044707775116
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 22,
+    "precision": [
+      0.969,
+      { "TP": 364, "TN": 605, "FP": 7, "FN": 24 },
+      1402.834320783615
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 23,
+    "precision": [
+      0.969,
+      { "TP": 364, "TN": 605, "FP": 7, "FN": 24 },
+      1386.1334278583527
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 24,
+    "precision": [
+      0.969,
+      { "TP": 362, "TN": 607, "FP": 5, "FN": 26 },
+      1533.322996854782
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 25,
+    "precision": [
+      0.969,
+      { "TP": 362, "TN": 607, "FP": 5, "FN": 26 },
+      1533.7662858963013
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 22,
+    "precision": [
+      0.969,
+      { "TP": 361, "TN": 608, "FP": 4, "FN": 27 },
+      1384.8481500148773
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 23,
+    "precision": [
+      0.969,
+      { "TP": 361, "TN": 608, "FP": 4, "FN": 27 },
+      1386.2812359333038
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 24,
+    "precision": [
+      0.969,
+      { "TP": 365, "TN": 604, "FP": 8, "FN": 23 },
+      1813.3952980041504
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 25,
+    "precision": [
+      0.969,
+      { "TP": 365, "TN": 604, "FP": 8, "FN": 23 },
+      1676.681180715561
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 20,
+    "precision": [
+      0.968,
+      { "TP": 362, "TN": 606, "FP": 6, "FN": 26 },
+      1258.964212179184
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 21,
+    "precision": [
+      0.968,
+      { "TP": 362, "TN": 606, "FP": 6, "FN": 26 },
+      1257.4011404514313
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 22,
+    "precision": [
+      0.968,
+      { "TP": 364, "TN": 604, "FP": 8, "FN": 24 },
+      1386.6974289417267
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 23,
+    "precision": [
+      0.968,
+      { "TP": 364, "TN": 604, "FP": 8, "FN": 24 },
+      1385.3242826461792
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 22,
+    "precision": [
+      0.967,
+      { "TP": 360, "TN": 607, "FP": 5, "FN": 28 },
+      1397.7220060825348
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 23,
+    "precision": [
+      0.967,
+      { "TP": 360, "TN": 607, "FP": 5, "FN": 28 },
+      1401.3083193302155
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 24,
+    "precision": [
+      0.967,
+      { "TP": 359, "TN": 608, "FP": 4, "FN": 29 },
+      1527.763226032257
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 25,
+    "precision": [
+      0.967,
+      { "TP": 359, "TN": 608, "FP": 4, "FN": 29 },
+      1531.5047204494476
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 24,
+    "precision": [
+      0.967,
+      { "TP": 360, "TN": 607, "FP": 5, "FN": 28 },
+      1528.1174314022064
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 25,
+    "precision": [
+      0.967,
+      { "TP": 360, "TN": 607, "FP": 5, "FN": 28 },
+      1528.5495216846466
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 22,
+    "precision": [
+      0.967,
+      { "TP": 363, "TN": 604, "FP": 8, "FN": 25 },
+      1407.628051996231
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 23,
+    "precision": [
+      0.967,
+      { "TP": 363, "TN": 604, "FP": 8, "FN": 25 },
+      1519.0969371795654
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 20,
+    "precision": [
+      0.967,
+      { "TP": 364, "TN": 603, "FP": 9, "FN": 24 },
+      1362.420550107956
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 21,
+    "precision": [
+      0.967,
+      { "TP": 364, "TN": 603, "FP": 9, "FN": 24 },
+      1376.3507730960846
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 22,
+    "precision": [
+      0.967,
+      { "TP": 362, "TN": 605, "FP": 7, "FN": 26 },
+      1498.215099811554
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 23,
+    "precision": [
+      0.967,
+      { "TP": 362, "TN": 605, "FP": 7, "FN": 26 },
+      1439.309467792511
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 24,
+    "precision": [
+      0.967,
+      { "TP": 362, "TN": 605, "FP": 7, "FN": 26 },
+      1603.7133929729462
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 25,
+    "precision": [
+      0.967,
+      { "TP": 362, "TN": 605, "FP": 7, "FN": 26 },
+      1687.2520203590393
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 20,
+    "precision": [
+      0.966,
+      { "TP": 363, "TN": 603, "FP": 9, "FN": 25 },
+      1263.1174941062927
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 21,
+    "precision": [
+      0.966,
+      { "TP": 363, "TN": 603, "FP": 9, "FN": 25 },
+      1260.401201248169
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 20,
+    "precision": [
+      0.963,
+      { "TP": 356, "TN": 607, "FP": 5, "FN": 32 },
+      1260.165537595749
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 21,
+    "precision": [
+      0.963,
+      { "TP": 356, "TN": 607, "FP": 5, "FN": 32 },
+      1259.6156268119812
+    ]
+  }
+]
