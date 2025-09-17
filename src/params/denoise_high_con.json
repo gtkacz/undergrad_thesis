@@ -1,0 +1,326 @@
+[
+  {
+    "template_window_size": 9,
+    "search_window_size": 22,
+    "precision": [
+      0.987,
+      { "TP": 382, "TN": 605, "FP": 7, "FN": 6 },
+      281.69472002983093
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 23,
+    "precision": [
+      0.987,
+      { "TP": 382, "TN": 605, "FP": 7, "FN": 6 },
+      283.4758780002594
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 24,
+    "precision": [
+      0.987,
+      { "TP": 382, "TN": 605, "FP": 7, "FN": 6 },
+      312.65412306785583
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 25,
+    "precision": [
+      0.987,
+      { "TP": 382, "TN": 605, "FP": 7, "FN": 6 },
+      313.97364830970764
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 20,
+    "precision": [
+      0.987,
+      { "TP": 382, "TN": 605, "FP": 7, "FN": 6 },
+      258.3718845844269
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 21,
+    "precision": [
+      0.987,
+      { "TP": 382, "TN": 605, "FP": 7, "FN": 6 },
+      264.70637369155884
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 24,
+    "precision": [
+      0.986,
+      { "TP": 380, "TN": 606, "FP": 6, "FN": 8 },
+      320.486483335495
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 25,
+    "precision": [
+      0.986,
+      { "TP": 380, "TN": 606, "FP": 6, "FN": 8 },
+      320.8645260334015
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 20,
+    "precision": [
+      0.986,
+      { "TP": 380, "TN": 606, "FP": 6, "FN": 8 },
+      261.17761850357056
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 21,
+    "precision": [
+      0.986,
+      { "TP": 380, "TN": 606, "FP": 6, "FN": 8 },
+      260.53380250930786
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 22,
+    "precision": [
+      0.986,
+      { "TP": 381, "TN": 605, "FP": 7, "FN": 7 },
+      289.5893898010254
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 23,
+    "precision": [
+      0.986,
+      { "TP": 381, "TN": 605, "FP": 7, "FN": 7 },
+      290.0561661720276
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 20,
+    "precision": [
+      0.986,
+      { "TP": 382, "TN": 604, "FP": 8, "FN": 6 },
+      257.1638391017914
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 21,
+    "precision": [
+      0.986,
+      { "TP": 382, "TN": 604, "FP": 8, "FN": 6 },
+      257.60149335861206
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 22,
+    "precision": [
+      0.986,
+      { "TP": 383, "TN": 603, "FP": 9, "FN": 5 },
+      290.46990990638733
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 23,
+    "precision": [
+      0.986,
+      { "TP": 383, "TN": 603, "FP": 9, "FN": 5 },
+      290.92932629585266
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 20,
+    "precision": [
+      0.986,
+      { "TP": 381, "TN": 605, "FP": 7, "FN": 7 },
+      256.905663728714
+    ]
+  },
+  {
+    "template_window_size": 9,
+    "search_window_size": 21,
+    "precision": [
+      0.986,
+      { "TP": 381, "TN": 605, "FP": 7, "FN": 7 },
+      254.70077204704285
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 22,
+    "precision": [
+      0.986,
+      { "TP": 382, "TN": 604, "FP": 8, "FN": 6 },
+      293.16392731666565
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 23,
+    "precision": [
+      0.986,
+      { "TP": 382, "TN": 604, "FP": 8, "FN": 6 },
+      302.1986861228943
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 24,
+    "precision": [
+      0.986,
+      { "TP": 382, "TN": 604, "FP": 8, "FN": 6 },
+      318.47987365722656
+    ]
+  },
+  {
+    "template_window_size": 10,
+    "search_window_size": 25,
+    "precision": [
+      0.986,
+      { "TP": 382, "TN": 604, "FP": 8, "FN": 6 },
+      322.75766706466675
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 20,
+    "precision": [
+      0.985,
+      { "TP": 383, "TN": 602, "FP": 10, "FN": 5 },
+      263.0876097679138
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 21,
+    "precision": [
+      0.985,
+      { "TP": 383, "TN": 602, "FP": 10, "FN": 5 },
+      258.35927748680115
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 20,
+    "precision": [
+      0.985,
+      { "TP": 383, "TN": 602, "FP": 10, "FN": 5 },
+      263.4509401321411
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 21,
+    "precision": [
+      0.985,
+      { "TP": 383, "TN": 602, "FP": 10, "FN": 5 },
+      260.8412752151489
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 24,
+    "precision": [
+      0.985,
+      { "TP": 382, "TN": 603, "FP": 9, "FN": 6 },
+      321.2961366176605
+    ]
+  },
+  {
+    "template_window_size": 8,
+    "search_window_size": 25,
+    "precision": [
+      0.985,
+      { "TP": 382, "TN": 603, "FP": 9, "FN": 6 },
+      314.3153941631317
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 24,
+    "precision": [
+      0.984,
+      { "TP": 381, "TN": 603, "FP": 9, "FN": 7 },
+      313.7271761894226
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 25,
+    "precision": [
+      0.984,
+      { "TP": 381, "TN": 603, "FP": 9, "FN": 7 },
+      319.0238997936249
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 24,
+    "precision": [
+      0.984,
+      { "TP": 381, "TN": 603, "FP": 9, "FN": 7 },
+      319.3793992996216
+    ]
+  },
+  {
+    "template_window_size": 7,
+    "search_window_size": 25,
+    "precision": [
+      0.984,
+      { "TP": 381, "TN": 603, "FP": 9, "FN": 7 },
+      317.0893278121948
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 22,
+    "precision": [
+      0.983,
+      { "TP": 379, "TN": 604, "FP": 8, "FN": 9 },
+      289.45046830177307
+    ]
+  },
+  {
+    "template_window_size": 6,
+    "search_window_size": 23,
+    "precision": [
+      0.983,
+      { "TP": 379, "TN": 604, "FP": 8, "FN": 9 },
+      288.9005539417267
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 22,
+    "precision": [
+      0.981,
+      { "TP": 383, "TN": 598, "FP": 14, "FN": 5 },
+      280.34573698043823
+    ]
+  },
+  {
+    "template_window_size": 5,
+    "search_window_size": 23,
+    "precision": [
+      0.981,
+      { "TP": 383, "TN": 598, "FP": 14, "FN": 5 },
+      282.639182806015
+    ]
+  }
+]
