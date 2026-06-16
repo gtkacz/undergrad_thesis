@@ -55,7 +55,7 @@ class BinaryCNN(nn.Module):
 
 		# Fully connected layers
 		self.fc_layers = nn.Sequential(
-			nn.Linear(256 * 8 * 8, 512),  # Adjusted input size after conv layers for 512x512 input
+			nn.Linear(256 * 8 * 8, 512),  # Adjusted input size after conv layers for 128x128 input
 			nn.ReLU(),  # ReLU activation function
 			nn.Linear(512, 256),  # Fully connected layer with 256 units
 			nn.ReLU(),  # ReLU activation function

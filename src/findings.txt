@@ -1,0 +1,520 @@
+╭─── Claude Code v2.1.170 ─────────────────────────────────────────────────────╮
+│                                       │ Tips for getting started             │
+│         Welcome back Gabriel!         │ Run /init to create a CLAUDE.md fil… │
+│                                       │ ──────────────────────────────────── │
+│                ▐▛███▜▌                │ What's new                           │
+│               ▝▜█████▛▘               │ Introducing Claude Fable 5: a Mytho… │
+│                 ▘▘ ▝▝                 │ Fixed sessions not saving transcrip… │
+│                                       │ Added `--safe-mode` flag (and `CLAU… │
+│   Opus 4.8 · Claude Team · Flxpoint   │ /release-notes for more              │
+│     ~/Codes/undergrad_thesis/src      │                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+ ▎ Meet Fable 5, our newest model for complex, long-running work. Try anytime with /model.
+ ▎ Included in your plan limits until Jun 22, then switch to usage credits to continue.
+
+✻ Conversation compacted (ctrl+o for history)
+
+  ⎿  Referenced file ../../../../../tmp/claude-1000/-home-gtkacz-Codes-undergrad-thesis/e6c3e1e8-dee0-493d-abef-041350fbc2be/tasks/wnkt5ewpd.output
+  ⎿  Read ../../../.claude/rules/python/coding-style.md (43 lines)
+  ⎿  Read ../../../.claude/rules/python/hooks.md (20 lines)
+  ⎿  Read ../../../.claude/rules/python/patterns.md (40 lines)
+  ⎿  Read ../../../.claude/rules/python/security.md (31 lines)
+  ⎿  Skills restored (deep-research)
+  ⎿  SessionStart:compact says: [src] recent context, 2026-06-10 1:57pm GMT-3
+     ────────────────────────────────────────────────────────────
+
+     Legend: session-request | 🔴 bugfix | 🟣 feature | 🔄 refactor | ✅ change | 🔵 discovery | ⚖️ decision
+
+     Column Key
+       Read: Tokens to read this observation (cost to learn it now)
+       Work: Tokens spent on work that produced this record ( research, building, deciding)
+
+     Context Index: This semantic index (titles, types, files, tokens) is usually sufficient to understand past work.
+
+     When you need implementation details, rationale, or debugging context:
+       - Fetch by ID: get_observations([IDs]) for observations visible in this index
+       - Search history: Use the mem-search skill for past decisions, bugs, and deeper research
+       - Trust this index over re-reading code for past decisions and learnings
+
+     Context Economics
+       Loading: 23 observations (8,449 tokens to read)
+       Work investment: 115,596 tokens spent on research, building, and decisions
+       Your savings: 93% reduction from reuse
+
+     Apr 12, 2026
+
+     src/main.py
+       #892  2:25 PM  🔵  CUDA cuBLAS Initialization Error in Training Pipeline
+     src/util/cnn.py
+       #893  2:26 PM  🔵  Code Architecture Uses Advanced CUDA Features Without Explicit Initialization
+     src/main.py
+       #894           🔵  Main Entry Point Calls configure_cuda() Before Device Initialization
+     src/util/config.py
+       #895  2:27 PM  🔵  CUDA Context Initialized During Dataset Splitting Before Model Creation
+     General
+       #896  2:28 PM  🔵  GPU Memory Nearly Exhausted by Ollama Processes Before Training Starts
+     #S255 Debug persistent CUDA errors in PyTorch pipeline after stopping ollama (Apr 12, 2:28 PM)
+
+     #S254 Diagnose CUBLAS_STATUS_NOT_INITIALIZED runtime error during PyTorch CNN training for undergraduate thesis pipeline (Apr 12, 2:28 PM)
+
+     General
+       #897  2:34 PM  🔵  CUDA cuBLAS initialization failure in PyTorch linear operations
+       #898  2:36 PM  🔵  Mixed CUDA library versions causing cuBLAS initialization failure
+       #899  2:37 PM  🔴  Fixed cuBLAS initialization by forcing consistent CUDA 13.0 library loading
+     src/main.py
+       #900  2:42 PM  🔴  cuBLAS fix successfully applied to main experiment pipeline
+     src/util/preprocessing.py
+       #901  2:46 PM  🔵  Image preprocessing bug - equalization receives negative values in YUV color space
+     #S279 Diagnosed and fixed "too many open files" error in grid search causing OSError during DataLoader multiprocessing (Apr 12, 2:46 PM)
+
+     ../../home/gtkacz/.claude/projects/-home-gtkacz-Codes-undergrad-thesis/memory/project_revision_plan.md
+       #976  9:21 PM  🔵  BCELoss with autocast creates unsafe mixed-precision pattern
+     ../../home/gtkacz/Codes/undergrad_thesis/src/util/cnn.py
+       #977           🔵  BinaryCNN architecture has sigmoid activation before BCELoss
+     ../../home/gtkacz/Codes/undergrad_thesis/src/util/gradcam.py
+       #978  9:22 PM  🔵  Grad-CAM implementation expects sigmoid probability outputs
+     ../../home/gtkacz/Codes/undergrad_thesis/src/util/cnn.py
+       #979           🔄  Removed sigmoid activation from BinaryCNN output layer
+     ../../home/gtkacz/Codes/undergrad_thesis/src/util/runner.py
+       #980           🔄  Switched loss function to BCEWithLogitsLoss and updated prediction thresholds for logit outputs
+     ../../home/gtkacz/Codes/undergrad_thesis/src/util/metrics.py
+       #981           🔄  Updated confidence calculation and Grad-CAM target for logit-based outputs
+     ../../home/gtkacz/Codes/undergrad_thesis/src/util/runner.py
+       #982  9:23 PM  ✅  Updated docstrings to reflect BCEWithLogitsLoss as default criterion
+     src/grid_search.py
+       #983  9:26 PM  🔵  Grid Search Hits File Descriptor Limit During Multiprocessing
+     src/util/dataset.py
+       #984  9:27 PM  🔵  DataLoader Configuration Uses 12 Workers with Persistent Workers Enabled
+     src/grid_search.py
+       #985           🔴  Fixed File Descriptor Exhaustion by Reusing DataLoaders Across Grid Search
+       #986  9:42 PM  🔵  CUDA OOM during bilateral blur grid search
+     src/util/preprocessing.py
+       #987           🔵  DenoiseTransform implementation uses unoptimized bilateral blur
+       #988  9:44 PM  🔴  Added batch chunking to DenoiseTransform to prevent CUDA OOM
+     #S280 Fix CUDA out of memory error in bilateral blur denoising during grid search (Apr 12, 9:44 PM)
+
+
+     Investigated: The grid search crashed with CUDA OOM when evaluating DenoiseTransform with template_window_size=11 and search_window_size=15. The error occurred in kornia.filters.bilateral_blur attempting to allocate 2.84 GiB with only 2.66 GiB available on a 15.56 GiB GPU. Examined src/util/preprocessing.py to understand the DenoiseTransform implementation and identified that bilateral blur was processing entire batches without memory management.
+
+     Learned: The bilateral blur operation unfolds input tensors from B×C×H×W to B×C×H×W×K² dimensions, where K is the kernel size. With large batches and large window sizes, the intermediate unfolded tensors exceed GPU memory capacity. The original DenoiseTransform implementation prioritized simplicity over memory efficiency, calling kornia.filters.bilateral_blur directly on full batches without chunking, gradient checkpointing, or other memory optimization strategies. Memory fragmentation (2.34 GiB reserved but unallocated) indicated that GPU memory wasn't being properly released between grid search iterations.
+
+     Completed: Implemented batch chunking in DenoiseTransform.forward() to prevent CUDA OOM errors. Batches larger than 32 images are now split into chunks, processed independently through bilateral blur, and concatenated. This allows grid search to evaluate larger window size combinations without exhausting GPU memory while preserving the original single-pass implementation for smaller batches.
+
+     Next Steps: The grid search can now resume testing the Denoise configuration with previously problematic window sizes. Monitor whether the chunking strategy successfully completes the grid search evaluation and verify that denoising accuracy results are consistent with the unchunked implementation.
+
+
+     Access 116k tokens of past research & decisions for just 8,449t. Use the claude-mem skill to access memories by ID.
+
+     View Observations Live @ http://localhost:37777
+
+● I'll ground every assertion in the actual manuscript text before writing the
+  review, since a formal pre-submission critique can't rest on memory alone. Let
+  me re-read the source of truth and the bibliography.
+
+  Read 2 files (ctrl+o to expand)
+
+● I have the front matter, methods, and the first results through the
+  bibliography. I need the back half — positional analysis, confusion-matrix
+  decomposition, discussion, and critically the limitations section — to confirm
+  what the paper does and does not concede. Let me read the remainder.
+
+  Read 1 file (ctrl+o to expand)
+
+● The manuscript is now fully grounded. Before I commit HIGH-severity claims
+  about code-versus-paper mismatches to a formal review, I'll verify them
+  against the actual source rather than memory — specifically the denoising
+  implementation, the equalization implementation, the healthy/diseased data
+  loading, and whether the orphan bib entries are cited anywhere.
+
+  Read 1 file (ctrl+o to expand)
+
+● Bash(cd /home/gtkacz/Codes/undergrad_thesis && echo "=== cite checks in
+      main.tex ===" && grep -no -E
+      "\\\\cite\{[^}]*megpaulson[^}]*\}|\\\\cite\{[^}]*HealthySkin[^}]…)
+  ⎿  Denied by auto mode classifier ∙ see 
+     https://code.claude.com/docs/s/claude-code-auto-mode
+  ⎿  Loaded ../../../.claude/rules/python/testing.md
+
+● The code confirms the most serious findings definitively. The Bash grep was
+  blocked by the auto-mode classifier, so I'll use the dedicated Grep tool,
+  which is the appropriate instrument here anyway.
+
+  Key confirmations from preprocessing.py:
+  - DenoiseTransform (lines 52–91): docstring says "bilateral filtering," and
+  the code calls kornia.filters.bilateral_blur. It explicitly "maps OpenCV NLM
+  params to bilateral blur params." The paper (§III.B) calls this "Non-Local
+  Means Denoising," cites Buades 2005, and claims it works "unlike local
+  filters" — but bilateral filtering is a local filter.
+  - EqualizationTransform (lines 142–171): kornia.enhance.equalize on the Y
+  channel = standard global histogram equalization. Matches Table 1's "standard
+  histogram equalization," but the cited Pizer 1987 (AHE) and Reza 2004 (CLAHE)
+  are adaptive variants.
+  - NormalizeTransform (lines 24–49): TF.normalize with fixed constants — not
+  the per-image "empirical statistics of the input image" that §III.B (line 135)
+  describes. Notably, the discussion (line 418) describes it correctly as fixed
+  affine, contradicting its own methods section.
+
+  Searched for 2 patterns (ctrl+o to expand)
+
+● The Grep tool isn't available in this environment and Bash grep was
+  classifier-blocked, so I'll read grid_search.py directly to ground the
+  seed-provenance point — it matters more than I first rated, because the
+  paper's entire grid-search-leakage analysis (§V.E) is premised on the grid
+  search having used the seed-42 partition.
+
+  Read 1 file (ctrl+o to expand)
+
+● I now have everything grounded in the actual source — manuscript,
+  bibliography, and the three transform implementations plus the grid-search
+  driver. One additional, concrete inconsistency surfaced from grid_search.py
+  that I had not previously pinned down: the normalization grid is
+  np.arange(0.15, 1, 0.15) → {0.15, 0.30, 0.45, 0.60, 0.75, 0.90}, so Table 1's
+  reported "Mean 0.4, Std 0.2" is not attainable by the released grid, and the
+  search runs with no explicit seed (so the "seed-42 partition" claim needs
+  reconciling). No further investigation is needed; here is the review.
+
+  ---
+  Pre-submission review: Significance of Transform Ordering and Selection in CNN
+  Preprocessing for Binary Skin Disease Classification
+
+  Bottom line
+
+  The manuscript is numerically faithful and statistically honest — every
+  headline number I checked against the released analysis.json and against the
+  text's own internal cross-references is consistent, and the statistical
+  apparatus (multi-seed replication, bootstrap CIs, permutation tests, Holm +
+  Benjamini–Hochberg, leave-one-seed-out) is more rigorous and more
+  self-critical than the typical preprocessing paper. The novelty claim
+  (variance decomposition into selection vs ordering) is genuine.
+
+  It is not ready to send to Elsevier as-is. Two issues will, with high
+  probability, draw a major-revision-or-reject from a competent Computers in 
+  Biology and Medicine (CBM) referee:
+
+  1. A cross-source confound that the paper does not acknowledge. Healthy and
+  diseased images come from different source datasets (diseased = HAM10000;
+  "healthy" = some other corpus), so the 98.09% baseline — against which every
+  result in the paper is measured — cannot be shown to reflect pathology
+  discrimination rather than dataset-source discrimination. This is the textbook
+  shortcut-learning failure mode in dermoscopy, and it is not in the
+  limitations section.
+  2. Accuracy is the only evaluation metric. No AUROC, sensitivity, specificity,
+  F1, or calibration metric appears anywhere — below current medical-AI
+  reporting norms (CLAIM, TRIPOD+AI), and conspicuous given that the paper's own
+  error-mechanism section is about the false-positive/false-negative trade-off.
+
+  Separately, when a referee downloads the advertised replication code, they
+  will find that two of the four transforms are not the methods the paper 
+  describes, and a third is cited to the wrong algorithm variant. All of this is
+  fixable; none of it is fatal to the underlying empirical finding. Details
+  below, organized to your three questions.
+
+  ---
+  Part 1 — Are the claims true and relevant?
+
+  1a. Internal/numerical claims: verified true and mutually consistent
+
+  I re-derived or cross-checked the following against the text and the released
+  artifact. All hold.
+
+  ┌──────────────────────────────────────┬─────────────┬───────────────────┐
+  │                Claim                 │  Location   │      Status       │
+  ├──────────────────────────────────────┼─────────────┼───────────────────┤
+  │ Baseline ε₀ = 98.09% ± 0.19%;        │ Abstract,   │ ✓ consistent      │
+  │ ceiling bound +1.91 pp               │ §III–IV,    │ throughout; 100 − │
+  │                                      │ Concl.      │  98.09 = 1.91     │
+  ├──────────────────────────────────────┼─────────────┼───────────────────┤
+  │ Length–α correlation r = −0.44, raw  │ §IV.B       │ ✓ matches         │
+  │ p = 0.00032, p_Holm = 0.00128        │             │ artifact          │
+  ├──────────────────────────────────────┼─────────────┼───────────────────┤
+  │ η²_selection = 0.76 (k=2, raw p =    │             │                   │
+  │ 0.067, n.s. after Holm); 0.42 (k=3,  │ §IV.C       │ ✓                 │
+  │ F(3,20)=4.83, p_Holm=0.022)          │             │                   │
+  ├──────────────────────────────────────┼─────────────┼───────────────────┤
+  │ k=4 range 3.78 pp (−0.51 → −4.29),   │ §IV.C       │ ✓ arithmetic      │
+  │ within-set SD 1.07 pp                │             │ checks            │
+  ├──────────────────────────────────────┼─────────────┼───────────────────┤
+  │ E-first +1.10 pp, d=1.22,            │             │                   │
+  │ p_Holm=0.0005; within-inclusion      │ §IV.D       │ ✓                 │
+  │ +1.22 pp, d=1.39                     │             │                   │
+  ├──────────────────────────────────────┼─────────────┼───────────────────┤
+  │ Bookend E…N vs N…E: −0.52 vs −2.53 → │ §IV.D       │ ✓                 │
+  │  +2.00 pp, d=2.38, p_Holm=0.025      │             │                   │
+  ├──────────────────────────────────────┼─────────────┼───────────────────┤
+  │ Error mix: 78.1% bidirectional,      │             │                   │
+  │ 21.9% threshold-shift,               │ §IV.E       │ ✓                 │
+  │ r(ΔFP,ΔFN)=+0.04                     │             │                   │
+  ├──────────────────────────────────────┼─────────────┼───────────────────┤
+  │ BH-FDR: 49/64 (76.6%) significantly  │ §IV.A       │ ✓                 │
+  │ negative, 0 positive                 │             │                   │
+  ├──────────────────────────────────────┼─────────────┼───────────────────┤
+  │ LOSO: E-first, length–α, bookend     │             │ ✓ — and the paper │
+  │ robust in all 5 runs; k=3 ANOVA not  │ §V.E        │  discloses this   │
+  │ robust (loses Holm-significance when │             │ fragility itself  │
+  │  seed 256 dropped)                   │             │                   │
+  └──────────────────────────────────────┴─────────────┴───────────────────┘
+
+  The grid-search composition also checks out: 36 + 55 + 4 = 95 configurations,
+  matching the code (np.arange(0.15,1,0.15)² = 36; [3,5,7,9,11] × range(15,26) =
+  55; 4 colour spaces).
+
+  This is the paper's real strength. The honest disclosure that one of its four
+  headline findings (the k=3 selection→ordering crossover) is sensitive to
+  single-seed exclusion, the repeated foregrounding of the ceiling effect, the
+  walling-off of Grad-CAM from any inferential claim, and the de-escalation of
+  the title from the old "Transform Ordering Dominates Selection" to the
+  carefully hedged current title are all to the authors' credit and should be
+  preserved.
+
+  1b. External and method claims: several do not survive checking
+
+  These are the claims that are not fully true or not relevant as stated.
+
+  #: A
+  Claim (as written): "Non-Local Means Denoising (D)… computing weighted
+  averages
+    over similar image patches [Buades 2005]… Unlike local filters, non-local
+    means preserves repetitive patterns" (§III.B); Table 1 "Template window 5
+  px,
+     Search 19 px"
+  Problem: The released DenoiseTransform calls kornia.filters.bilateral_blur —
+    bilateral filtering, a local filter — and explicitly "maps OpenCV NLM params
+
+    to bilateral blur params." The method, the Buades citation, the  "unlike
+    local filters" sentence, and the NLM-style parameter names in  Table 1 are
+    all wrong for the algorithm actually run.
+  Severity: MAJOR
+  ────────────────────────────────────────
+  #: B
+  Claim (as written): "Intensity Normalization… x′ = σ_t·(x−μ_in)/σ_in + μ_t,
+    where μ_in, σ_in are the empirical statistics of the input image" (§III.B)
+  Problem: The code is TF.normalize(x, 0.4, 0.2) = (x−0.4)/0.2 with fixed 
+    constants, not per-image empirical statistics. §V.B contradicts §III.B  by
+    correctly describing it as fixed affine "x′=(x−μ)/σ". Also, Table  1's "Mean
+   
+    0.4, Std 0.2" is not attainable by the released grid (multiples of 0.15).
+  Severity: MAJOR (cluster)
+  ────────────────────────────────────────
+  #: C
+  Claim (as written): Histogram equalization cited to Pizer 1987 and Reza 2004
+    (§III.B, §V.B)
+  Problem: The code is kornia.enhance.equalize = global HE (correctly labelled
+    "standard histogram equalization" in Table 1). Pizer 1987 (AHE) and Reza
+  2004
+     (CLAHE) are adaptive variants — a different algorithm. Gonzalez & Woods is
+    the correct reference and is already cited.
+  Severity: MEDIUM
+  ────────────────────────────────────────
+  #: D
+  Claim (as written): "66.3% baseline accuracy reported for human physicians"
+    [Barnett 2019] (§I)
+  Problem: Barnett 2019 is a general-medicine collective-intelligence study
+    (Human Diagnosis Project, text vignettes), not dermatology and not
+    image-based. Using it to anchor a sentence about skin-disease AI is a domain
+
+    mismatch; the "in certain diagnostic tasks" hedge is doing all the work. The
+
+    exact 66.3% figure should also be re-verified against the source.
+  Severity: MEDIUM
+  ────────────────────────────────────────
+  #: E
+  Claim (as written): "Deep learning models can increase diagnostic accuracy for
+
+    skin diseases by up to 12 pp" [Esteva, Jain, Brinker] (§I)
+  Problem: The 12 pp is most defensibly traceable to one nurse-practitioner 
+    subgroup in Jain 2021 (≈46→58%). Presented as a general capability; hedged
+  by
+     "up to," so defensible but cherry-picked. Attribute it precisely or soften.
+  Severity: MINOR–MEDIUM
+  ────────────────────────────────────────
+  #: F
+  Claim (as written): "RGB to HSV… separating luminance from chrominance"
+    (§III.B)
+  Problem: HSV separates value (max channel), not photometric luminance; LAB/YUV
+
+    would be the luminance/chrominance split. Also, WANG 2018 (an NLM
+    colour-denoising paper) is an odd citation for colour-space conversion.
+  Severity: MINOR
+  ────────────────────────────────────────
+  #: G
+  Claim (as written): "Each configuration was trained and evaluated under the
+    seed-42 data partition" (§III.B); the entire §V.E grid-search-leakage LOSO
+    rests on this
+  Problem: grid_search.py calls get_data_loaders(training_config) with no seed;
+    the default is 47, not 42. If true, the "mildly optimistic for seed 42"
+    caveat and the seed-42-leakage analysis are mis-targeted (and the results
+  are
+     less contaminated than the paper concedes). Verify and reconcile.
+  Severity: MEDIUM
+
+  On the cross-source confound (the most important item, and the reason the 
+  metrics matter). §III.A states the negative class is "healthy skin from a
+  subset of the DERM12345 dataset." Two problems compound here:
+
+  - DERM12345 is a lesion-only dataset. Its own Scientific Data paper (cited in
+  your refs.bib) describes "12,345 dermatoscopic images with 40 subclasses of
+  skin lesions." It contains no "healthy skin" class. So either the healthy
+  images are benign lesions mislabelled as "healthy" (which breaks the "healthy
+  versus diseased" framing), or they actually come from elsewhere and the
+  citation is wrong. The presence of two orphan, uncited bibliography entries —
+  megpaulson_healthy_skin (a non-peer-reviewed Hugging Face "Healthy Skin
+  Dataset") and a generic HealthySkin — strongly suggests the healthy source was
+  switched at some point and the provenance was never reconciled. You know the
+  ground truth; the paper must state it unambiguously.
+  - Regardless of which source is correct, the two classes come from different 
+  acquisition pipelines (confirmed in dataset.py: separate dataset/healthy and
+  dataset/diseased directories). A CNN reaches near-ceiling accuracy on such
+  pairings by exploiting low-level source signatures — colour balance,
+  compression, resolution, illumination, vignetting — rather than pathology.
+  This is the dominant null hypothesis a medical-imaging reviewer brings to any
+  98% "healthy vs diseased" result, and it is directly relevant to your thesis:
+  the four transforms most perturb exactly the low-level colour/intensity
+  statistics through which a source shortcut would operate. If the baseline is
+  substantially a source artifact, then the mechanistic story in §V.B
+  ("equalization-first preserves native image statistics for diagnostic
+  contrast") may actually be describing how much each ordering damages the 
+  dataset-source signature, not diagnostic features. The ordering effect would
+  still be a real, measured phenomenon, but its biomedical interpretation would
+  not hold.
+
+  This confound is not acknowledged. §V.E lists "single dataset pairing" as a
+  generalization limit, not as an internal-validity threat — those are different
+  things, and given how scrupulous the rest of that section is (it devotes
+  three paragraphs to a leakage concern that may not even exist, per item G),
+  the omission is conspicuous.
+
+  Relevance verdict: the claims are germane and the scope is, commendably,
+  already well-disciplined in the abstract/discussion/conclusion. The one
+  relevance risk is that the central mechanistic interpretation may be
+  explaining an artifact — which is the confound above.
+
+  ---
+  Part 2 — Does it make sense to send to Elsevier / CBM?
+
+  Scope fit: yes, with direct precedent. CBM has published the single closest
+  prior-art paper you cite (Rodrigues et al., Comput. Biol. Med. 2020, on
+  preprocessing-vs-CNN for HEp-2 cells). A combinatorial preprocessing study
+  with a strong statistical core is squarely in scope. The methodology exceeds
+  the rigor of typical CBM preprocessing papers, and the selection-vs-ordering
+  variance decomposition is, to my knowledge, unprecedented in this literature —
+  the adjacent work (AutoAugment/RandAugment; FreeAugment, ECCV 2024) concerns
+  training-time stochastic augmentation policy search, not deterministic
+  preprocessing-ordering with variance decomposition. The "to our knowledge, no
+  prior work has decomposed… selection and ordering" claim is defensible; I
+  would keep the hedge and, if anything, cite FreeAugment to pre-empt the
+  obvious "isn't this AutoAugment?" referee.
+
+  Why it is not yet submittable to CBM specifically:
+
+  1. The confound + provenance issue (Part 1). A near-ceiling 98% cross-source
+  result with no shortcut-learning control and an internally inconsistent
+  description of the negative class is the kind of thing that triggers a
+  desk-adjacent major revision at a biomedical venue. CBM referees will expect
+  shortcut learning to be addressed explicitly.
+  2. Accuracy-only metrics. For a binary medical classifier, reporting only
+  accuracy (even decomposed into ΔFP/ΔFN) is below CLAIM/TRIPOD+AI expectations.
+  The irony is that you already computed the confusion matrices, so
+  sensitivity, specificity, F1, balanced accuracy, and MCC are derivable from 
+  existing artifacts with no retraining. AUROC needs per-image probabilities,
+  which §V.E says were not persisted for all runs — so AUROC is achievable at
+  least for seed 42 now, and fully on a re-run.
+  3. Methods-vs-code mismatches (items A–C, G). Because the paper stakes its
+  credibility on open replication (§Data availability advertises full code
+  release), a referee who runs the code and finds that "Non-Local Means" is
+  bilateral filtering and that Table 1's normalization parameters can't come
+  from the stated grid will lose confidence in the whole methods section.
+  Individually minor; collectively a MAJOR accuracy problem precisely because
+  the code is public.
+
+  Journal recommendation. If the goal is the strongest possible paper, fix the
+  confound and add clinical metrics and keep CBM — the precedent and the
+  methodological rigor genuinely fit. If you would rather not run a new control
+  experiment, the contribution is fundamentally methodological (how to
+  construct/evaluate preprocessing pipelines), and Biomedical Signal Processing 
+  and Control (Elsevier; already your most-cited venue in the related work) is a
+  more natural home for a methods contribution where the dataset confound,
+  while still a weakness to disclose, sits against a slightly lower
+  clinical-validity bar. Computer Methods and Programs in Biomedicine is a
+  reasonable third option. I would not soften the confound disclosure in either
+  case.
+
+  ---
+  Part 3 — Prioritized improvements
+
+  Blockers (before any submission):
+
+  1. Resolve the negative-class provenance and the source confound. State
+  exactly where the healthy images come from; fix the DERM12345
+  mischaracterization (it has no healthy class); remove or correct the orphan
+  megpaulson_healthy_skin/HealthySkin entries. Then add a shortcut-learning 
+  probe — at minimum, a low-level baseline (e.g., a colour-histogram or mean-RGB
+  classifier on the raw two classes): if it also reaches ~98%, the source
+  signature is demonstrably doing the work and the framing must change
+  accordingly. Ideally, add a within-source control (both classes from the same
+  acquisition source, e.g., benign vs malignant within one corpus) or a
+  source-stratified analysis. Either way, add the confound to §V.E explicitly.
+  2. Add threshold-independent and per-class metrics. Sensitivity, specificity,
+  F1, balanced accuracy, and MCC are computable now from the confusion matrices
+  you already have; add AUROC for seed 42 (and for all seeds on any re-run).
+  Frame the reporting against CLAIM/TRIPOD+AI. This also strengthens §IV.E,
+  which is currently arguing about FP/FN trade-offs without the metrics designed
+  to quantify them.
+
+  Major (before submission):
+
+  3. Reconcile the denoising method. The code runs bilateral filtering; the
+  paper says Non-Local Means. The cheap, honest fix is to correct the text to
+  "bilateral filtering," update the Buades 2005 citation, fix the "unlike local
+  filters" sentence, and relabel Table 1's parameters — the empirical "denoising
+  is position-neutral" result is unaffected. (Re-running with a true NLM
+  implementation is the alternative but is expensive and unnecessary.)
+  4. Fix the normalization description. §III.B describes per-image empirical
+  standardization toward a target; the code is fixed-constant affine, and §V.B
+  already says so. Make §III.B match §V.B and the code, and correct Table 1's
+  "0.4 / 0.2" to the value the grid actually produced (a multiple of 0.15).
+
+  Medium:
+
+  5. Equalization citations: drop or relabel Pizer 1987 (AHE) and Reza 2004
+  (CLAHE), which describe adaptive variants; keep Gonzalez & Woods for the
+  global HE actually used, and state that global (not adaptive) HE was chosen.
+  6. Repair the opening motivation: replace the Barnett 2019 / 66.3% anchor with
+  a dermatology-specific human-baseline figure (or drop the number), and
+  attribute the "up to 12 pp" precisely to its source subgroup.
+  7. Verify the grid-search seed (get_data_loaders default appears to be 47, not
+  the claimed 42) and correct whichever is wrong — this affects the §III.B
+  optimism caveat and the §V.E leakage analysis.
+
+  Minor / housekeeping:
+
+  8. Tighten the HSV description ("value," not "luminance"); fix the WANG 2018
+  citation placement. Update the stale refs.bib header, which still bears the
+  old "Transform Ordering Dominates Selection" title — inconsistent with the
+  (correctly de-escalated) current title. Remove uncited orphan references
+  (irjet, ramachandran2017, and the healthy-skin orphans once provenance is
+  fixed). There is also a stale paper.md IEEE-era draft in paper/final/ that
+  contradicts main.tex (MSE vs BCE, different hardware, different author count);
+  it does not affect the compiled PDF but should not ship in the replication
+  repo.
+
+  Optional, highest-leverage strengthening: a second architecture (one ResNet
+  and/or a ViT) would convert the paper's self-described "existence proof" into
+  a transferable claim and directly answer the most obvious referee question —
+  which §V.E already pre-concedes. Not strictly required for a scoped methods
+  paper, but it is the single change that would most raise the paper's impact
+  and its odds at CBM.
+
+  A note on what not to change: the statistical framework, the ceiling-effect
+  framing, the LOSO disclosure of the fragile k=3 result, and the
+  scope-disciplined claims are the paper's backbone. Keep them. The work is
+  sound; the problems are in the experimental design's validity controls, the
+  evaluation breadth, and a methods section that drifted out of sync with the
+  released code — all addressable without disturbing the core result.
+
+✻ Sautéed for 31m 21s
+
+※ recap: Pre-submission review of the skin-disease preprocessing paper is complete. I delivered a three-part critique: claims verified, two blockers found (cross-source confound, accuracy-only metrics), code-vs-paper method mismatches flagged, plus prioritized fixes. Next: you decide which fixes to apply. (disable recaps in /config)
+
+❯ /model claude-fable-5                                                         
+  ⎿  Set model to Fable 5 and saved as your default for new sessions

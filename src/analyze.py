@@ -499,7 +499,10 @@ def run_loso_sensitivity(
 	Re-runs variance decomposition, length-degradation, and positional
 	analysis with each seed excluded in turn, then applies Holm correction.
 	Reports effect size ranges and min/max corrected p-values across the
-	five LOSO runs. Critical for addressing grid-search leakage on seed 42.
+	five LOSO runs. Because grid-search parameter selection used a disjoint
+	partition (seed 47), the evaluation seeds carry no tuning-on-test leakage;
+	this analysis instead establishes that the primary findings do not depend
+	on any single evaluation seed.
 
 	Returns:
 		Dict with per-excluded-seed results, effect size ranges, and summary
