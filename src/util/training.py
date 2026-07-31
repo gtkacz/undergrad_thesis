@@ -52,7 +52,7 @@ def train_epoch(
 		optimizer.zero_grad(set_to_none=True)
 
 		with torch.amp.autocast("cuda", enabled=use_amp):
-			outputs = model(images).squeeze()
+			outputs = model(images).squeeze(-1)
 			loss = criterion(outputs, labels)
 
 		if scaler is not None:
@@ -63,12 +63,12 @@ def train_epoch(
 			loss.backward()
 			optimizer.step()
 
-		running_loss += loss.item()
+		running_loss += loss.item() * labels.size(0)
 		preds = (outputs > 0.0).float()
 		running_corrects += torch.sum(preds == labels).item()
 		total_samples += labels.size(0)
 
-	avg_loss = running_loss / len(train_loader)
+	avg_loss = running_loss / total_samples
 	accuracy = running_corrects / total_samples
 	return avg_loss, accuracy
 
@@ -109,14 +109,14 @@ def validate_epoch(
 					images = t(images)
 
 			with torch.amp.autocast("cuda", enabled=use_amp):
-				outputs = model(images).squeeze()
+				outputs = model(images).squeeze(-1)
 				loss = criterion(outputs, labels)
 
-			val_loss += loss.item()
+			val_loss += loss.item() * labels.size(0)
 			preds = (outputs > 0.0).float()
 			running_corrects += torch.sum(preds == labels).item()
 			total_samples += labels.size(0)
 
-	avg_loss = val_loss / len(validation_loader)
+	avg_loss = val_loss / total_samples
 	accuracy = running_corrects / total_samples
 	return avg_loss, accuracy

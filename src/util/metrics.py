@@ -41,7 +41,7 @@ def compute_test_metrics(
 					images = t(images)
 
 			with torch.amp.autocast("cuda", enabled=use_amp):
-				outputs = model(images).squeeze()
+				outputs = model(images).squeeze(-1)
 
 			preds = (outputs > 0.0).float()
 
@@ -55,76 +55,6 @@ def compute_test_metrics(
 
 	accuracy = running_corrects / total_samples
 	return accuracy, confusion_matrix
-
-
-def compute_test_metrics_with_samples(
-	model: nn.Module,
-	test_loader: DataLoader,
-	device: torch.device,
-	use_amp: bool,
-	gpu_transforms: list[nn.Module] | None = None,
-) -> tuple[float, ConfusionMatrix, list[dict]]:
-	"""Compute test accuracy, confusion matrix, and per-sample predictions in one pass.
-
-	Extends ``compute_test_metrics`` by also collecting per-sample prediction
-	data needed for Grad-CAM reference image selection, avoiding a redundant
-	second forward pass over the test set.
-
-	Args:
-		model: Trained neural network model.
-		test_loader: DataLoader for test data.
-		device: Target device.
-		use_amp: Whether to use automatic mixed precision.
-		gpu_transforms: Optional GPU-side preprocessing transforms.
-
-	Returns:
-		Tuple of (test_accuracy, confusion_matrix, sample_predictions) where
-		each sample prediction is a dict with keys: image, label, confidence,
-		prediction, image_id.
-	"""
-	model.eval()
-	running_corrects = 0
-	total_samples = 0
-	confusion_matrix: ConfusionMatrix = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
-	samples: list[dict] = []
-	img_idx = 0
-
-	with torch.no_grad():
-		for images, labels in test_loader:
-			images_cpu = images
-			images_dev = images.to(device, non_blocking=True, memory_format=torch.channels_last)
-			labels_dev = labels.to(device, non_blocking=True).float()
-
-			if gpu_transforms:
-				for t in gpu_transforms:
-					images_dev = t(images_dev)
-
-			with torch.amp.autocast("cuda", enabled=use_amp):
-				outputs = model(images_dev).squeeze()
-
-			preds = (outputs > 0.0).float()
-			confs = torch.sigmoid(outputs).cpu()
-
-			confusion_matrix["TP"] += int(torch.sum((preds == 1) & (labels_dev == 1)).item())
-			confusion_matrix["TN"] += int(torch.sum((preds == 0) & (labels_dev == 0)).item())
-			confusion_matrix["FP"] += int(torch.sum((preds == 1) & (labels_dev == 0)).item())
-			confusion_matrix["FN"] += int(torch.sum((preds == 0) & (labels_dev == 1)).item())
-			running_corrects += torch.sum(preds == labels_dev).item()
-			total_samples += labels_dev.size(0)
-
-			for j in range(labels.size(0)):
-				conf = confs[j].item()
-				samples.append({
-					"image": images_cpu[j],
-					"label": int(labels[j].item()),
-					"confidence": conf,
-					"prediction": 1 if conf > 0.5 else 0,
-					"image_id": f"img_{img_idx:05d}",
-				})
-				img_idx += 1
-
-	accuracy = running_corrects / total_samples
-	return accuracy, confusion_matrix, samples
 
 
 def compute_alpha(accuracy: float, base_accuracy: float) -> float:

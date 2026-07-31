@@ -1,8 +1,7 @@
 """Derive threshold-dependent clinical metrics from the released confusion matrices.
 
 The main experiment persisted per-pipeline, per-seed confusion matrices but reported
-only accuracy. Current medical-AI reporting standards (CLAIM, TRIPOD+AI) expect
-per-class and threshold-independent metrics. Every metric below is recoverable from
+only accuracy. The fixed-threshold, per-class metrics below are recoverable from
 the stored confusion matrices with no retraining; this script recomputes them per
 seed and aggregates across the five seeds, mirroring the seed-averaging used for the
 accuracy-gain analysis.
@@ -18,7 +17,7 @@ import math
 from pathlib import Path
 
 SEED_MANIFEST = Path("output/seed_manifest.json")
-CONFIDENCE_LEVEL = "base"
+REGIME = "base"
 
 
 def _metrics_from_confusion(tp: float, tn: float, fp: float, fn: float) -> dict[str, float]:
@@ -56,25 +55,24 @@ def _metrics_from_confusion(tp: float, tn: float, fp: float, fn: float) -> dict[
 
 
 def _mean_std(values: list[float]) -> tuple[float, float]:
-	"""Return the sample mean and population standard deviation of ``values``."""
+	"""Return the mean and sample standard deviation of ``values``."""
 	n = len(values)
 	mean = sum(values) / n
-	variance = sum((v - mean) ** 2 for v in values) / n
+	variance = sum((v - mean) ** 2 for v in values) / (n - 1) if n > 1 else 0.0
 	return mean, math.sqrt(variance)
 
 
 def main() -> None:
 	"""Aggregate per-seed clinical metrics for every pipeline and print a summary."""
-	manifest = json.loads(SEED_MANIFEST.read_text())
+	manifest = json.loads(SEED_MANIFEST.read_text(encoding="utf-8"))
 	seed_dirs = manifest["seed_dirs"]
 
-	# pipeline combo_key -> metric name -> list of per-seed values
 	per_pipeline: dict[str, dict[str, list[float]]] = {}
 
 	for seed_dir in seed_dirs.values():
-		matrix = json.loads((Path(seed_dir) / "results_matrix.json").read_text())
+		matrix = json.loads((Path(seed_dir) / "results_matrix.json").read_text(encoding="utf-8"))
 		for entry in matrix:
-			if entry["confidence_level"] != CONFIDENCE_LEVEL:
+			if entry["regime"] != REGIME:
 				continue
 			cm = entry["confusion_matrix"]
 			metrics = _metrics_from_confusion(cm["TP"], cm["TN"], cm["FP"], cm["FN"])
@@ -110,14 +108,12 @@ def main() -> None:
 		if named in aggregated:
 			print(_fmt(named))
 
-	# Spread across the 64 non-baseline pipelines for each metric.
 	print("\nRange across 64 non-baseline pipelines (mean of per-seed means):")
 	for m in metric_order:
 		scale = 100 if m != "mcc" else 1
 		vals = [stats[m][0] * scale for combo, stats in aggregated.items() if combo != "Baseline"]
 		print(f"  {m:18s} min={min(vals):.2f}  max={max(vals):.2f}  median={sorted(vals)[len(vals) // 2]:.2f}")
 
-	# Baseline detail with dispersion across seeds.
 	print("\nBaseline detail (mean +/- SD across 5 seeds):")
 	for m in metric_order:
 		scale = 100 if m != "mcc" else 1
@@ -128,7 +124,8 @@ def main() -> None:
 		json.dumps(
 			{combo: {m: {"mean": v[0], "std": v[1]} for m, v in stats.items()} for combo, stats in aggregated.items()},
 			indent=2,
-		)
+		),
+		encoding="utf-8",
 	)
 	print("\nWrote output/clinical_metrics.json")
 

@@ -89,7 +89,7 @@ def main() -> None:
 	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 	logger.info("Using device: %s", device)
 
-	training_config, *_ = load_configs()
+	training_config, _ = load_configs()
 
 	PARAMS_DIR.mkdir(exist_ok=True)
 
@@ -101,28 +101,29 @@ def main() -> None:
 		training_config=training_config,
 		device=device,
 	)
-	(PARAMS_DIR / "colorspace.json").write_text(json.dumps(cs_results, indent=2))
+	(PARAMS_DIR / "colorspace.json").write_text(json.dumps(cs_results, indent=2), encoding="utf-8")
 
 	logger.info("=== Denoise grid search ===")
 	d_results = _grid_search(
 		name="Denoise",
 		param_grid=[
-			{"template_window_size": t, "search_window_size": s}
-			for t, s in itertools.product(
+			{"kernel_size": kernel_size, "sigma_space": sigma_space, "sigma_color": 10}
+			for kernel_size, sigma_space in itertools.product(
 				[3, 5, 7, 9, 11],
 				range(15, 26),
 			)
 		],
 		build_transforms=lambda p: [
 			DenoiseTransform(
-				template_window_size=p["template_window_size"],
-				search_window_size=p["search_window_size"],
+				kernel_size=p["kernel_size"],
+				sigma_space=p["sigma_space"],
+				sigma_color=p["sigma_color"],
 			),
 		],
 		training_config=training_config,
 		device=device,
 	)
-	(PARAMS_DIR / "denoise.json").write_text(json.dumps(d_results, indent=2))
+	(PARAMS_DIR / "denoise.json").write_text(json.dumps(d_results, indent=2), encoding="utf-8")
 
 	logger.info("=== Normalize grid search ===")
 	n_results = _grid_search(
@@ -135,7 +136,7 @@ def main() -> None:
 		training_config=training_config,
 		device=device,
 	)
-	(PARAMS_DIR / "normalize.json").write_text(json.dumps(n_results, indent=2))
+	(PARAMS_DIR / "normalize.json").write_text(json.dumps(n_results, indent=2), encoding="utf-8")
 
 	logger.info("Grid search complete. Results written to %s/", PARAMS_DIR)
 

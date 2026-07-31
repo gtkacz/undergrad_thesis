@@ -8,3 +8,7 @@
 *.pdf
 *.png
 *.spl
+
+!fig_length_effect.pdf
+!fig_positional.pdf
+!fig_variance_decomp.pdf

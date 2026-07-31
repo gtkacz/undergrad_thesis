@@ -1,18 +1,94 @@
-<center>
-    <p align="center">
-        <img src="https://logodownload.org/wp-content/uploads/2017/09/mackenzie-logo-3.png" style="height: 7ch;"><br>
-        <h1 align="center">Significance of Transform Ordering and Selection in CNN Preprocessing for Binary Skin Classification</h1>
-        <h4 align="center">Gabriel Mitelman Tkacz, Gustavo Scalabrini Sampaio, Leandro Augusto da Silva</a></h4>
-        <h4 align="center">Mackenzie Presbyterian University &mdash; S&atilde;o Paulo, Brazil</h4>
-    </p>
-</center>
+# Transform ordering and selection in CNN preprocessing
 
-<hr>
+Code, saved results, and manuscript sources for an exhaustive evaluation of
+the 65 ordered pipelines formed from four image transforms:
 
-## Abstract
+- global luminance histogram equalization;
+- bilateral filtering;
+- fixed affine normalization; and
+- RGB-to-HSV conversion.
 
-Image preprocessing is a near-universal step in medical image classification pipelines, yet its impact on model accuracy remains insufficiently characterized, particularly with respect to the ordering of multi-transform compositions. This study reports an exhaustive combinatorial evaluation of all 65 pipelines constructible from four fundamental transforms &mdash; histogram equalization, intensity normalization, non-local means denoising, and color space conversion &mdash; applied to a four-block convolutional neural network trained on the binary healthy-versus-diseased dermatoscopic classification task formed by using a dataset with 20,000 balanced images. Every pipeline was trained from scratch under five independent random seeds. Against a near-ceiling baseline of 98.09% test accuracy, which arithmetically bounds the detectable positive-&alpha; regime to at most +1.91 pp, no pipeline of length 2 or greater achieves a positive mean accuracy gain, and only equalization alone produces a seed-robust improvement. Holm-corrected permutation tests establish three ordering regularities: pipeline length correlates negatively with accuracy gain (*r* = &minus;0.44), equalization-first placement outperforms alternative first-position assignments by 1.10 pp (Cohen's *d* = 1.22), and the bookend configuration with equalization first and normalization last outperforms its mirror image by 2.00 pp (Cohen's *d* = 2.38). At pipeline *k* = 3, ordering accounts for 58% of accuracy-gain variance and transform selection for 42%. Confusion-matrix decomposition indicates that preprocessing-induced degradation is dominated by bidirectional feature-space damage (78%) rather than recoverable decision-threshold shift (22%). Within the scope of this single network, single binary task, single dataset, and single transform set, the evidence supports a cautious harm-minimization heuristic &mdash; equalization first, normalization last &mdash; rather than a general claim about ordering dominance in medical image preprocessing.
+Each pipeline was trained from scratch with five seeds on a balanced
+healthy-versus-diseased image task containing 12,078 images. The mean
+unprocessed baseline accuracy is 98.09%. No multi-transform pipeline improves
+mean accuracy, while ordering accounts for 58% of the observed accuracy-gain
+variance at pipeline length three. These results are specific to the exact
+implementation and data construction: class is strongly confounded with image
+source, and several transform orders cross incompatible value-range or
+color-space contracts. The work is not a clinical validation study.
 
-## Keywords
+## Repository layout
 
-Image preprocessing &middot; Transform ordering &middot; Preprocessing pipeline design &middot; Convolutional neural networks &middot; Medical image classification &middot; Dermatological diagnosis
+- `src/main.py`: runs 65 pipelines for each of five seeds (325 training runs).
+- `src/analyze.py`: regenerates aggregate statistics from saved seed results.
+- `src/compute_clinical_metrics.py`: derives fixed-threshold per-class metrics.
+- `src/verify_dataset.py`: verifies the local dataset against the checksum manifest.
+- `src/output/`: saved per-seed metrics and generated analysis artifacts.
+- `paper/final/`: Elsevier manuscript, references, highlights, and figures.
+- `tests/`: unit tests for enumeration, splitting, metrics, and statistics.
+
+## Environment
+
+The project requires Python 3.13 and uses [uv](https://docs.astral.sh/uv/):
+
+```console
+uv sync --locked
+```
+
+PyTorch is pinned to the CUDA 12.8 package index. A compatible NVIDIA setup is
+needed to reproduce all 325 training runs in a practical amount of time.
+
+## Dataset
+
+Place the two classes below `src/dataset/`:
+
+```text
+src/dataset/
+├── diseased/   # 6,039 HAM10000 images
+└── healthy/    # 6,039 Healthy Skin Dataset images
+```
+
+The dataset itself is not redistributed. After acquisition, verify the exact
+files used in the paper:
+
+```console
+cd src
+uv run python verify_dataset.py
+```
+
+The code performs a deterministic image-level 80/10/remainder split for each
+seed. It does not group HAM10000 images by lesion identifier; this is a known
+limitation documented in the manuscript.
+
+## Reproduce the saved analysis and paper
+
+From the repository root:
+
+```console
+make verify
+```
+
+This runs the unit tests, rebuilds the analysis and clinical-metric JSON files,
+regenerates the three quantitative figures, and compiles the manuscript.
+Compilation uses a local LaTeX installation when available and otherwise can
+use Podman or Docker.
+
+To rerun the full training matrix:
+
+```console
+cd src
+uv run python main.py
+```
+
+Training overwrites the saved seed-level result matrices. Per-image logits were
+not retained in the original experiment, so AUROC, calibration, and
+decision-threshold sweeps cannot be reconstructed without retraining.
+
+## Main result
+
+For this exact CNN, dataset pairing, transform implementation, and parameter
+setting, equalization-first/normalization-last is less harmful than the reverse
+ordering by 2.00 percentage points on average. Because normalization produces
+values outside `[0, 1]` while later transforms clamp or reinterpret those
+values, this pattern should be understood partly as an implementation-contract
+effect, not as a universal preprocessing prescription.

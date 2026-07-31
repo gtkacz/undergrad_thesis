@@ -1,6 +1,7 @@
 """Dataset loading, splitting, and DataLoader construction."""
 
 from collections.abc import Sequence
+from math import isclose
 from pathlib import Path
 
 import numpy as np
@@ -32,6 +33,9 @@ class SkinDiseaseDataset(Dataset):
 			root_dir: Root directory containing 'healthy' and 'diseased' subdirectories.
 			transform: Optional torchvision transforms to apply to each image.
 			max_samples: Maximum number of samples to load per class.
+
+		Raises:
+			FileNotFoundError: If either class directory is absent.
 		"""
 		self.root_dir = Path(root_dir)
 		self.transform = transform
@@ -42,6 +46,11 @@ class SkinDiseaseDataset(Dataset):
 
 		for label, condition in enumerate(["healthy", "diseased"]):
 			condition_path = self.root_dir / condition
+			if not condition_path.is_dir():
+				raise FileNotFoundError(
+					f"Expected dataset class directory at {condition_path}. "
+					"See README.md for the required dataset layout.",
+				)
 			count = 0
 
 			for filepath in sorted(condition_path.iterdir()):
@@ -72,7 +81,8 @@ class SkinDiseaseDataset(Dataset):
 		Returns:
 			Tuple of (image, label).
 		"""
-		image = Image.open(self.image_paths[idx]).convert("RGB")
+		with Image.open(self.image_paths[idx]) as source:
+			image = source.convert("RGB")
 
 		if self.transform:
 			image = self.transform(image)
@@ -98,17 +108,24 @@ def split_datasets(
 
 	Returns:
 		Tuple of (training_subset, testing_subset, validation_subset).
+
+	Raises:
+		ValueError: If ratios are negative or do not sum to one.
 	"""
+	ratios = (training_ratio, testing_ratio, validation_ratio)
+	if any(ratio < 0 for ratio in ratios) or not isclose(sum(ratios), 1.0):
+		raise ValueError("training, testing, and validation ratios must be nonnegative and sum to 1")
+
 	dataset_size = len(dataset)  # type: ignore[arg-type]
 	indices = list(range(dataset_size))
 
 	torch.manual_seed(seed)
-	np.random.seed(seed)  # noqa: NPY002
+	np.random.seed(seed)  # ruff: ignore[numpy-legacy-random]
 
 	if torch.cuda.is_available():
 		torch.cuda.manual_seed_all(seed)
 
-	np.random.shuffle(indices)  # noqa: NPY002
+	np.random.shuffle(indices)  # ruff: ignore[numpy-legacy-random]
 
 	training_split = int(np.floor(training_ratio * dataset_size))
 	testing_split = int(np.floor(testing_ratio * dataset_size))
@@ -157,16 +174,15 @@ def get_data_loaders(
 
 	transform = transforms.Compose(base_transforms)
 
-	loader_kwargs: dict = {
+	common_loader_kwargs: dict = {
 		"batch_size": training_config.batch_size,
-		"shuffle": training_config.shuffle,
 		"num_workers": training_config.num_workers,
 		"pin_memory": training_config.pin_memory,
 	}
 
 	if training_config.num_workers > 0:
-		loader_kwargs["persistent_workers"] = True
-		loader_kwargs["prefetch_factor"] = 4
+		common_loader_kwargs["persistent_workers"] = True
+		common_loader_kwargs["prefetch_factor"] = 4
 
 	base_dataset = SkinDiseaseDataset(root_dir="dataset", transform=transform)
 	train_dataset, test_dataset, validation_dataset = split_datasets(
@@ -178,7 +194,7 @@ def get_data_loaders(
 	)
 
 	return (
-		DataLoader(train_dataset, **loader_kwargs),
-		DataLoader(test_dataset, **loader_kwargs),
-		DataLoader(validation_dataset, **loader_kwargs),
+		DataLoader(train_dataset, shuffle=training_config.shuffle, **common_loader_kwargs),
+		DataLoader(test_dataset, shuffle=False, **common_loader_kwargs),
+		DataLoader(validation_dataset, shuffle=False, **common_loader_kwargs),
 	)

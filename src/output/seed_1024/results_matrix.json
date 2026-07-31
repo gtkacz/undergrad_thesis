@@ -1,7 +1,6 @@
 [
   {
     "combo_key": "Baseline",
-    "confidence_level": "base",
     "transforms": [],
     "accuracy": 0.980115990057995,
     "alpha": 0.0,
@@ -14,11 +13,10 @@
       "FN": 16
     },
     "training_time_seconds": 11.625375986099243,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform"
     ],
@@ -33,11 +31,10 @@
       "FN": 9
     },
     "training_time_seconds": 11.214207887649536,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform"
     ],
@@ -52,11 +49,10 @@
       "FN": 30
     },
     "training_time_seconds": 11.729209661483765,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform"
     ],
@@ -71,11 +67,10 @@
       "FN": 26
     },
     "training_time_seconds": 11.054593086242676,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform"
     ],
@@ -90,11 +85,10 @@
       "FN": 12
     },
     "training_time_seconds": 12.029362201690674,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "DenoiseTransform"
@@ -110,11 +104,10 @@
       "FN": 12
     },
     "training_time_seconds": 11.77839994430542,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "ColorSpaceTransform"
@@ -130,11 +123,10 @@
       "FN": 5
     },
     "training_time_seconds": 11.044267654418945,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "EqualizationTransform"
@@ -150,11 +142,10 @@
       "FN": 23
     },
     "training_time_seconds": 12.337090492248535,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "NormalizeTransform"
@@ -170,11 +161,10 @@
       "FN": 5
     },
     "training_time_seconds": 11.757710456848145,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "ColorSpaceTransform"
@@ -190,11 +180,10 @@
       "FN": 33
     },
     "training_time_seconds": 11.821909189224243,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "EqualizationTransform"
@@ -210,11 +199,10 @@
       "FN": 5
     },
     "training_time_seconds": 16.10944652557373,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "NormalizeTransform"
@@ -230,11 +218,10 @@
       "FN": 13
     },
     "training_time_seconds": 11.128026247024536,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "DenoiseTransform"
@@ -250,11 +237,10 @@
       "FN": 11
     },
     "training_time_seconds": 11.798797130584717,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "EqualizationTransform"
@@ -270,11 +256,10 @@
       "FN": 22
     },
     "training_time_seconds": 12.301653146743774,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "NormalizeTransform"
@@ -290,11 +275,10 @@
       "FN": 10
     },
     "training_time_seconds": 12.180613994598389,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "DenoiseTransform"
@@ -310,11 +294,10 @@
       "FN": 14
     },
     "training_time_seconds": 16.170214891433716,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "ColorSpaceTransform"
@@ -330,11 +313,10 @@
       "FN": 9
     },
     "training_time_seconds": 12.277078866958618,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "DenoiseTransform",
@@ -351,11 +333,10 @@
       "FN": 31
     },
     "training_time_seconds": 11.718323945999146,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "DenoiseTransform",
@@ -372,11 +353,10 @@
       "FN": 5
     },
     "training_time_seconds": 16.534120321273804,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "ColorSpaceTransform",
@@ -393,11 +373,10 @@
       "FN": 26
     },
     "training_time_seconds": 11.70847463607788,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "ColorSpaceTransform",
@@ -414,11 +393,10 @@
       "FN": 82
     },
     "training_time_seconds": 12.686909914016724,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "EqualizationTransform",
@@ -435,11 +413,10 @@
       "FN": 32
     },
     "training_time_seconds": 16.459022045135498,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "EqualizationTransform",
@@ -456,11 +433,10 @@
       "FN": 4
     },
     "training_time_seconds": 12.674248933792114,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "NormalizeTransform",
@@ -477,11 +453,10 @@
       "FN": 27
     },
     "training_time_seconds": 11.712713718414307,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "NormalizeTransform",
@@ -498,11 +473,10 @@
       "FN": 13
     },
     "training_time_seconds": 16.486815929412842,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "ColorSpaceTransform",
@@ -519,11 +493,10 @@
       "FN": 3
     },
     "training_time_seconds": 11.726482629776001,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "ColorSpaceTransform",
@@ -540,11 +513,10 @@
       "FN": 20
     },
     "training_time_seconds": 16.36660599708557,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "EqualizationTransform",
@@ -561,11 +533,10 @@
       "FN": 5
     },
     "training_time_seconds": 16.22724938392639,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "EqualizationTransform",
@@ -582,11 +553,10 @@
       "FN": 6
     },
     "training_time_seconds": 16.385517358779907,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "NormalizeTransform",
@@ -603,11 +573,10 @@
       "FN": 8
     },
     "training_time_seconds": 11.776601552963257,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "NormalizeTransform",
@@ -624,11 +593,10 @@
       "FN": 15
     },
     "training_time_seconds": 12.74123215675354,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "DenoiseTransform",
@@ -645,11 +613,10 @@
       "FN": 17
     },
     "training_time_seconds": 11.762707710266113,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "DenoiseTransform",
@@ -666,11 +633,10 @@
       "FN": 14
     },
     "training_time_seconds": 16.32798933982849,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "EqualizationTransform",
@@ -687,11 +653,10 @@
       "FN": 11
     },
     "training_time_seconds": 12.286974906921387,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "EqualizationTransform",
@@ -708,11 +673,10 @@
       "FN": 17
     },
     "training_time_seconds": 16.385793447494507,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "NormalizeTransform",
@@ -729,11 +693,10 @@
       "FN": 5
     },
     "training_time_seconds": 16.263840675354004,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "NormalizeTransform",
@@ -750,11 +713,10 @@
       "FN": 30
     },
     "training_time_seconds": 12.365998268127441,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "DenoiseTransform",
@@ -771,11 +733,10 @@
       "FN": 2
     },
     "training_time_seconds": 16.288694143295288,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "DenoiseTransform",
@@ -792,11 +753,10 @@
       "FN": 8
     },
     "training_time_seconds": 16.377695083618164,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "ColorSpaceTransform",
@@ -813,11 +773,10 @@
       "FN": 22
     },
     "training_time_seconds": 12.437068939208984,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "ColorSpaceTransform",
@@ -834,11 +793,10 @@
       "FN": 5
     },
     "training_time_seconds": 16.387633562088013,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> DenoiseTransform -> ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "DenoiseTransform",
@@ -856,11 +814,10 @@
       "FN": 16
     },
     "training_time_seconds": 16.672645330429077,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> DenoiseTransform -> EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "DenoiseTransform",
@@ -878,11 +835,10 @@
       "FN": 22
     },
     "training_time_seconds": 16.69151020050049,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> ColorSpaceTransform -> DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "ColorSpaceTransform",
@@ -900,11 +856,10 @@
       "FN": 29
     },
     "training_time_seconds": 16.538965463638306,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> ColorSpaceTransform -> EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "ColorSpaceTransform",
@@ -922,11 +877,10 @@
       "FN": 39
     },
     "training_time_seconds": 16.681183338165283,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> EqualizationTransform -> DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "EqualizationTransform",
@@ -944,11 +898,10 @@
       "FN": 37
     },
     "training_time_seconds": 16.735188007354736,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "NormalizeTransform -> EqualizationTransform -> ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "NormalizeTransform",
       "EqualizationTransform",
@@ -966,11 +919,10 @@
       "FN": 15
     },
     "training_time_seconds": 16.711959838867188,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> NormalizeTransform -> ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "NormalizeTransform",
@@ -988,11 +940,10 @@
       "FN": 42
     },
     "training_time_seconds": 16.70698094367981,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> NormalizeTransform -> EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "NormalizeTransform",
@@ -1010,11 +961,10 @@
       "FN": 41
     },
     "training_time_seconds": 16.702076196670532,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> ColorSpaceTransform -> NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "ColorSpaceTransform",
@@ -1032,11 +982,10 @@
       "FN": 22
     },
     "training_time_seconds": 16.819560766220093,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> ColorSpaceTransform -> EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "ColorSpaceTransform",
@@ -1054,11 +1003,10 @@
       "FN": 7
     },
     "training_time_seconds": 16.42778730392456,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> EqualizationTransform -> NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "EqualizationTransform",
@@ -1076,11 +1024,10 @@
       "FN": 7
     },
     "training_time_seconds": 16.236284017562866,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "DenoiseTransform -> EqualizationTransform -> ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "DenoiseTransform",
       "EqualizationTransform",
@@ -1098,11 +1045,10 @@
       "FN": 20
     },
     "training_time_seconds": 16.327032804489136,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> NormalizeTransform -> DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "NormalizeTransform",
@@ -1120,11 +1066,10 @@
       "FN": 9
     },
     "training_time_seconds": 16.73379635810852,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> NormalizeTransform -> EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "NormalizeTransform",
@@ -1142,11 +1087,10 @@
       "FN": 17
     },
     "training_time_seconds": 16.72696328163147,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> DenoiseTransform -> NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "DenoiseTransform",
@@ -1164,11 +1108,10 @@
       "FN": 15
     },
     "training_time_seconds": 16.775853872299194,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> DenoiseTransform -> EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "DenoiseTransform",
@@ -1186,11 +1129,10 @@
       "FN": 23
     },
     "training_time_seconds": 16.503765106201172,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> EqualizationTransform -> NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "EqualizationTransform",
@@ -1208,11 +1150,10 @@
       "FN": 19
     },
     "training_time_seconds": 16.391353368759155,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "ColorSpaceTransform -> EqualizationTransform -> DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "ColorSpaceTransform",
       "EqualizationTransform",
@@ -1230,11 +1171,10 @@
       "FN": 22
     },
     "training_time_seconds": 16.426538705825806,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> NormalizeTransform -> DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "NormalizeTransform",
@@ -1252,11 +1192,10 @@
       "FN": 32
     },
     "training_time_seconds": 16.419626235961914,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> NormalizeTransform -> ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "NormalizeTransform",
@@ -1274,11 +1213,10 @@
       "FN": 41
     },
     "training_time_seconds": 16.370868921279907,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> DenoiseTransform -> NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "DenoiseTransform",
@@ -1296,11 +1234,10 @@
       "FN": 19
     },
     "training_time_seconds": 16.298039436340332,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> DenoiseTransform -> ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "DenoiseTransform",
@@ -1318,11 +1255,10 @@
       "FN": 24
     },
     "training_time_seconds": 16.428409576416016,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> ColorSpaceTransform -> NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "ColorSpaceTransform",
@@ -1340,11 +1276,10 @@
       "FN": 16
     },
     "training_time_seconds": 16.272862434387207,
-    "gradcam_images": []
+    "regime": "base"
   },
   {
     "combo_key": "EqualizationTransform -> ColorSpaceTransform -> DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "base",
     "transforms": [
       "EqualizationTransform",
       "ColorSpaceTransform",
@@ -1362,1371 +1297,6 @@
       "FN": 13
     },
     "training_time_seconds": 16.380659341812134,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "Baseline",
-    "confidence_level": "high_con",
-    "transforms": [],
-    "accuracy": 0.980115990057995,
-    "alpha": 0.0,
-    "gamma": 1.0,
-    "weighted_alpha": 0.0,
-    "confusion_matrix": {
-      "TP": 575,
-      "TN": 608,
-      "FP": 8,
-      "FN": 16
-    },
-    "training_time_seconds": 11.64109992980957,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.9826014913007457,
-    "alpha": 0.0024855012427507095,
-    "gamma": 0.9552165848610479,
-    "weighted_alpha": 0.0026020289870828267,
-    "confusion_matrix": {
-      "TP": 583,
-      "TN": 603,
-      "FP": 13,
-      "FN": 8
-    },
-    "training_time_seconds": 11.119771718978882,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9710024855012428,
-    "alpha": -0.009113504556752194,
-    "gamma": 1.7045422967845698,
-    "weighted_alpha": -0.015534353988923028,
-    "confusion_matrix": {
-      "TP": 564,
-      "TN": 608,
-      "FP": 8,
-      "FN": 27
-    },
-    "training_time_seconds": 19.8427472114563,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9768019884009942,
-    "alpha": -0.003314001657000798,
-    "gamma": 0.9565635635146885,
-    "weighted_alpha": -0.003170053234514266,
-    "confusion_matrix": {
-      "TP": 575,
-      "TN": 604,
-      "FP": 12,
-      "FN": 16
-    },
-    "training_time_seconds": 11.135452032089233,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.9867439933719967,
-    "alpha": 0.006628003314001707,
-    "gamma": 1.0350285722992962,
-    "weighted_alpha": 0.006403691155383009,
-    "confusion_matrix": {
-      "TP": 579,
-      "TN": 612,
-      "FP": 4,
-      "FN": 12
-    },
-    "training_time_seconds": 12.048871040344238,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9809444904722452,
-    "alpha": 0.0008285004142501995,
-    "gamma": 1.7018097127630691,
-    "weighted_alpha": 0.0004868349310952286,
-    "confusion_matrix": {
-      "TP": 580,
-      "TN": 604,
-      "FP": 12,
-      "FN": 11
-    },
-    "training_time_seconds": 19.81093692779541,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9784589892294946,
-    "alpha": -0.001657000828500399,
-    "gamma": 0.9484901911084335,
-    "weighted_alpha": -0.001571649032491176,
-    "confusion_matrix": {
-      "TP": 581,
-      "TN": 600,
-      "FP": 16,
-      "FN": 10
-    },
-    "training_time_seconds": 11.041469097137451,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.9834299917149959,
-    "alpha": 0.003314001657000909,
-    "gamma": 1.045931689454653,
-    "weighted_alpha": 0.0031684685438002395,
-    "confusion_matrix": {
-      "TP": 588,
-      "TN": 599,
-      "FP": 17,
-      "FN": 3
-    },
-    "training_time_seconds": 12.175795316696167,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.9751449875724938,
-    "alpha": -0.004971002485501197,
-    "gamma": 1.7061028283274804,
-    "weighted_alpha": -0.008481041400136526,
-    "confusion_matrix": {
-      "TP": 586,
-      "TN": 591,
-      "FP": 25,
-      "FN": 5
-    },
-    "training_time_seconds": 19.860913515090942,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9776304888152444,
-    "alpha": -0.0024855012427505985,
-    "gamma": 1.725457269842539,
-    "weighted_alpha": -0.004288626188506685,
-    "confusion_matrix": {
-      "TP": 580,
-      "TN": 600,
-      "FP": 16,
-      "FN": 11
-    },
-    "training_time_seconds": 20.086220502853394,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.9850869925434963,
-    "alpha": 0.004971002485501308,
-    "gamma": 2.148629452087227,
-    "weighted_alpha": 0.0023135689965863423,
-    "confusion_matrix": {
-      "TP": 586,
-      "TN": 603,
-      "FP": 13,
-      "FN": 5
-    },
-    "training_time_seconds": 25.012410163879395,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.9768019884009942,
-    "alpha": -0.003314001657000798,
-    "gamma": 0.9510198722361008,
-    "weighted_alpha": -0.0031516814324311256,
-    "confusion_matrix": {
-      "TP": 568,
-      "TN": 611,
-      "FP": 5,
-      "FN": 23
-    },
-    "training_time_seconds": 11.07091736793518,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9850869925434963,
-    "alpha": 0.004971002485501308,
-    "gamma": 1.7270861252023295,
-    "weighted_alpha": 0.002878259753791347,
-    "confusion_matrix": {
-      "TP": 583,
-      "TN": 606,
-      "FP": 10,
-      "FN": 8
-    },
-    "training_time_seconds": 20.10518217086792,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.8152444076222038,
-    "alpha": -0.16487158243579114,
-    "gamma": 1.053078512257899,
-    "weighted_alpha": -0.17362272074508847,
-    "confusion_matrix": {
-      "TP": 382,
-      "TN": 602,
-      "FP": 14,
-      "FN": 209
-    },
-    "training_time_seconds": 12.258992195129395,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.9842584921292461,
-    "alpha": 0.0041425020712511085,
-    "gamma": 1.0471094970269308,
-    "weighted_alpha": 0.003956130741830686,
-    "confusion_matrix": {
-      "TP": 582,
-      "TN": 606,
-      "FP": 10,
-      "FN": 9
-    },
-    "training_time_seconds": 12.18950629234314,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9817729908864954,
-    "alpha": 0.001657000828500399,
-    "gamma": 2.1430145082430148,
-    "weighted_alpha": 0.000773210270918286,
-    "confusion_matrix": {
-      "TP": 576,
-      "TN": 609,
-      "FP": 7,
-      "FN": 15
-    },
-    "training_time_seconds": 24.947046041488647,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9734879867439934,
-    "alpha": -0.006628003314001596,
-    "gamma": 1.0632380139626356,
-    "weighted_alpha": -0.007047145080116824,
-    "confusion_matrix": {
-      "TP": 587,
-      "TN": 588,
-      "FP": 28,
-      "FN": 4
-    },
-    "training_time_seconds": 12.377259969711304,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "DenoiseTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9776304888152444,
-    "alpha": -0.0024855012427505985,
-    "gamma": 1.7301732516680761,
-    "weighted_alpha": -0.004300347767194847,
-    "confusion_matrix": {
-      "TP": 582,
-      "TN": 598,
-      "FP": 18,
-      "FN": 9
-    },
-    "training_time_seconds": 20.141119718551636,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "DenoiseTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.9685169842584921,
-    "alpha": -0.011599005799502904,
-    "gamma": 2.1523837598055735,
-    "weighted_alpha": -0.024965511712740713,
-    "confusion_matrix": {
-      "TP": 588,
-      "TN": 581,
-      "FP": 35,
-      "FN": 3
-    },
-    "training_time_seconds": 25.056114435195923,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "ColorSpaceTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9809444904722452,
-    "alpha": 0.0008285004142501995,
-    "gamma": 1.7268296446391445,
-    "weighted_alpha": 0.00047978120877310463,
-    "confusion_matrix": {
-      "TP": 580,
-      "TN": 604,
-      "FP": 12,
-      "FN": 11
-    },
-    "training_time_seconds": 20.10219645500183,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "ColorSpaceTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.848384424192212,
-    "alpha": -0.13173156586578294,
-    "gamma": 1.0669077771018216,
-    "weighted_alpha": -0.14054543211200468,
-    "confusion_matrix": {
-      "TP": 428,
-      "TN": 596,
-      "FP": 20,
-      "FN": 163
-    },
-    "training_time_seconds": 12.4199800491333,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "EqualizationTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.971830985915493,
-    "alpha": -0.008285004142501995,
-    "gamma": 2.148521497998866,
-    "weighted_alpha": -0.017800509511175195,
-    "confusion_matrix": {
-      "TP": 561,
-      "TN": 612,
-      "FP": 4,
-      "FN": 30
-    },
-    "training_time_seconds": 25.01115345954895,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "EqualizationTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9792874896437448,
-    "alpha": -0.0008285004142501995,
-    "gamma": 1.0727129052876245,
-    "weighted_alpha": -0.0008887430864023319,
-    "confusion_matrix": {
-      "TP": 585,
-      "TN": 597,
-      "FP": 19,
-      "FN": 6
-    },
-    "training_time_seconds": 12.487558126449585,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "NormalizeTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9668599834299917,
-    "alpha": -0.013256006628003303,
-    "gamma": 1.727631445930219,
-    "weighted_alpha": -0.02290149389799791,
-    "confusion_matrix": {
-      "TP": 586,
-      "TN": 581,
-      "FP": 35,
-      "FN": 5
-    },
-    "training_time_seconds": 20.111530303955078,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "NormalizeTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.9751449875724938,
-    "alpha": -0.004971002485501197,
-    "gamma": 2.1596080818063834,
-    "weighted_alpha": -0.010735417142368003,
-    "confusion_matrix": {
-      "TP": 588,
-      "TN": 589,
-      "FP": 27,
-      "FN": 3
-    },
-    "training_time_seconds": 25.14021348953247,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "ColorSpaceTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.975973487986744,
-    "alpha": -0.0041425020712509975,
-    "gamma": 1.7365634946993334,
-    "weighted_alpha": -0.007193717873650859,
-    "confusion_matrix": {
-      "TP": 588,
-      "TN": 590,
-      "FP": 26,
-      "FN": 3
-    },
-    "training_time_seconds": 20.215509176254272,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "ColorSpaceTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.7870753935376967,
-    "alpha": -0.19304059652029826,
-    "gamma": 2.153277458268812,
-    "weighted_alpha": -0.4156699650179231,
-    "confusion_matrix": {
-      "TP": 364,
-      "TN": 586,
-      "FP": 30,
-      "FN": 227
-    },
-    "training_time_seconds": 25.0665180683136,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "EqualizationTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.9660314830157415,
-    "alpha": -0.014084507042253502,
-    "gamma": 2.1516753917436975,
-    "weighted_alpha": -0.03030528720765767,
-    "confusion_matrix": {
-      "TP": 584,
-      "TN": 582,
-      "FP": 34,
-      "FN": 7
-    },
-    "training_time_seconds": 25.047868251800537,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "EqualizationTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9618889809444905,
-    "alpha": -0.0182270091135045,
-    "gamma": 2.1702436383071486,
-    "weighted_alpha": -0.03955705057394956,
-    "confusion_matrix": {
-      "TP": 589,
-      "TN": 572,
-      "FP": 44,
-      "FN": 2
-    },
-    "training_time_seconds": 25.264023065567017,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "NormalizeTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.980115990057995,
-    "alpha": 0.0,
-    "gamma": 1.7265876849351227,
-    "weighted_alpha": 0.0,
-    "confusion_matrix": {
-      "TP": 579,
-      "TN": 604,
-      "FP": 12,
-      "FN": 12
-    },
-    "training_time_seconds": 20.099379777908325,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "NormalizeTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.8210439105219552,
-    "alpha": -0.15907207953603975,
-    "gamma": 1.06026512917871,
-    "weighted_alpha": -0.1686585789580052,
-    "confusion_matrix": {
-      "TP": 394,
-      "TN": 597,
-      "FP": 19,
-      "FN": 197
-    },
-    "training_time_seconds": 12.342652320861816,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "DenoiseTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.9776304888152444,
-    "alpha": -0.0024855012427505985,
-    "gamma": 1.7294331384274937,
-    "weighted_alpha": -0.004298508214815603,
-    "confusion_matrix": {
-      "TP": 572,
-      "TN": 608,
-      "FP": 8,
-      "FN": 19
-    },
-    "training_time_seconds": 20.132503986358643,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "DenoiseTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.7829328914664457,
-    "alpha": -0.19718309859154926,
-    "gamma": 2.14976746554194,
-    "weighted_alpha": -0.4238978101068613,
-    "confusion_matrix": {
-      "TP": 372,
-      "TN": 573,
-      "FP": 43,
-      "FN": 219
-    },
-    "training_time_seconds": 25.025657892227173,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "EqualizationTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.8260149130074566,
-    "alpha": -0.15410107705053844,
-    "gamma": 1.0533995891395607,
-    "weighted_alpha": -0.16233001125100097,
-    "confusion_matrix": {
-      "TP": 398,
-      "TN": 599,
-      "FP": 17,
-      "FN": 193
-    },
-    "training_time_seconds": 12.26272988319397,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "EqualizationTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.6826843413421707,
-    "alpha": -0.2974316487158243,
-    "gamma": 2.1668825816703094,
-    "weighted_alpha": -0.6444994588398019,
-    "confusion_matrix": {
-      "TP": 588,
-      "TN": 236,
-      "FP": 380,
-      "FN": 3
-    },
-    "training_time_seconds": 25.224896669387817,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "NormalizeTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9792874896437448,
-    "alpha": -0.0008285004142501995,
-    "gamma": 2.147334699372748,
-    "weighted_alpha": -0.0017790676879641493,
-    "confusion_matrix": {
-      "TP": 584,
-      "TN": 598,
-      "FP": 18,
-      "FN": 7
-    },
-    "training_time_seconds": 24.997337818145752,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "NormalizeTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9768019884009942,
-    "alpha": -0.003314001657000798,
-    "gamma": 1.064565556374604,
-    "weighted_alpha": -0.0035279720178114137,
-    "confusion_matrix": {
-      "TP": 570,
-      "TN": 609,
-      "FP": 7,
-      "FN": 21
-    },
-    "training_time_seconds": 12.392714023590088,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "DenoiseTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.971830985915493,
-    "alpha": -0.008285004142501995,
-    "gamma": 2.160914774804208,
-    "weighted_alpha": -0.017903187860846628,
-    "confusion_matrix": {
-      "TP": 589,
-      "TN": 584,
-      "FP": 32,
-      "FN": 2
-    },
-    "training_time_seconds": 25.15542483329773,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "DenoiseTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.980115990057995,
-    "alpha": 0.0,
-    "gamma": 2.1786388044216816,
-    "weighted_alpha": 0.0,
-    "confusion_matrix": {
-      "TP": 581,
-      "TN": 602,
-      "FP": 14,
-      "FN": 10
-    },
-    "training_time_seconds": 25.361752033233643,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "ColorSpaceTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.9850869925434963,
-    "alpha": 0.004971002485501308,
-    "gamma": 1.0864342774854672,
-    "weighted_alpha": 0.0045755206628850156,
-    "confusion_matrix": {
-      "TP": 581,
-      "TN": 608,
-      "FP": 8,
-      "FN": 10
-    },
-    "training_time_seconds": 12.647289991378784,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "ColorSpaceTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9817729908864954,
-    "alpha": 0.001657000828500399,
-    "gamma": 2.1738311916738664,
-    "weighted_alpha": 0.0007622490811830222,
-    "confusion_matrix": {
-      "TP": 578,
-      "TN": 607,
-      "FP": 9,
-      "FN": 13
-    },
-    "training_time_seconds": 25.3057861328125,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> DenoiseTransform -> ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "DenoiseTransform",
-      "ColorSpaceTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.8061309030654515,
-    "alpha": -0.17398508699254345,
-    "gamma": 2.170538376930865,
-    "weighted_alpha": -0.3776413083309706,
-    "confusion_matrix": {
-      "TP": 383,
-      "TN": 590,
-      "FP": 26,
-      "FN": 208
-    },
-    "training_time_seconds": 25.267454147338867,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> DenoiseTransform -> EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "DenoiseTransform",
-      "EqualizationTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9842584921292461,
-    "alpha": 0.0041425020712511085,
-    "gamma": 2.1720286389846524,
-    "weighted_alpha": 0.0019072041670627252,
-    "confusion_matrix": {
-      "TP": 586,
-      "TN": 602,
-      "FP": 14,
-      "FN": 5
-    },
-    "training_time_seconds": 25.284802436828613,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> ColorSpaceTransform -> DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "ColorSpaceTransform",
-      "DenoiseTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.7829328914664457,
-    "alpha": -0.19718309859154926,
-    "gamma": 2.167080528220112,
-    "weighted_alpha": -0.42731165345185296,
-    "confusion_matrix": {
-      "TP": 580,
-      "TN": 365,
-      "FP": 251,
-      "FN": 11
-    },
-    "training_time_seconds": 25.227200984954834,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> ColorSpaceTransform -> EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "ColorSpaceTransform",
-      "EqualizationTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.8077879038939519,
-    "alpha": -0.17232808616404305,
-    "gamma": 2.1733411075569253,
-    "weighted_alpha": -0.37452771364692655,
-    "confusion_matrix": {
-      "TP": 586,
-      "TN": 389,
-      "FP": 227,
-      "FN": 5
-    },
-    "training_time_seconds": 25.30008101463318,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> EqualizationTransform -> DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "EqualizationTransform",
-      "DenoiseTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9784589892294946,
-    "alpha": -0.001657000828500399,
-    "gamma": 2.1744976151383297,
-    "weighted_alpha": -0.003603144349856354,
-    "confusion_matrix": {
-      "TP": 572,
-      "TN": 609,
-      "FP": 7,
-      "FN": 19
-    },
-    "training_time_seconds": 25.313544034957886,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "NormalizeTransform -> EqualizationTransform -> ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "NormalizeTransform",
-      "EqualizationTransform",
-      "ColorSpaceTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9867439933719967,
-    "alpha": 0.006628003314001707,
-    "gamma": 2.1774426870495565,
-    "weighted_alpha": 0.0030439392749219397,
-    "confusion_matrix": {
-      "TP": 583,
-      "TN": 608,
-      "FP": 8,
-      "FN": 8
-    },
-    "training_time_seconds": 25.347827911376953,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> NormalizeTransform -> ColorSpaceTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "NormalizeTransform",
-      "ColorSpaceTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.8028169014084507,
-    "alpha": -0.17729908864954425,
-    "gamma": 2.1608326674355416,
-    "weighted_alpha": -0.38311366266048524,
-    "confusion_matrix": {
-      "TP": 375,
-      "TN": 594,
-      "FP": 22,
-      "FN": 216
-    },
-    "training_time_seconds": 25.15446901321411,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> NormalizeTransform -> EqualizationTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "NormalizeTransform",
-      "EqualizationTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9618889809444905,
-    "alpha": -0.0182270091135045,
-    "gamma": 2.18037727281143,
-    "weighted_alpha": -0.03974175642241202,
-    "confusion_matrix": {
-      "TP": 589,
-      "TN": 572,
-      "FP": 44,
-      "FN": 2
-    },
-    "training_time_seconds": 25.38198971748352,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> ColorSpaceTransform -> NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "ColorSpaceTransform",
-      "NormalizeTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.7945318972659486,
-    "alpha": -0.18558409279204635,
-    "gamma": 2.1619238413910926,
-    "weighted_alpha": -0.40121867479006185,
-    "confusion_matrix": {
-      "TP": 379,
-      "TN": 580,
-      "FP": 36,
-      "FN": 212
-    },
-    "training_time_seconds": 25.167171478271484,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> ColorSpaceTransform -> EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "ColorSpaceTransform",
-      "EqualizationTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.7895608947804474,
-    "alpha": -0.19055509527754755,
-    "gamma": 2.15884138453873,
-    "weighted_alpha": -0.41137822571989036,
-    "confusion_matrix": {
-      "TP": 378,
-      "TN": 575,
-      "FP": 41,
-      "FN": 213
-    },
-    "training_time_seconds": 25.131288290023804,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> EqualizationTransform -> NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "EqualizationTransform",
-      "NormalizeTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9826014913007457,
-    "alpha": 0.0024855012427507095,
-    "gamma": 2.1743570761600837,
-    "weighted_alpha": 0.0011430970883310972,
-    "confusion_matrix": {
-      "TP": 581,
-      "TN": 605,
-      "FP": 11,
-      "FN": 10
-    },
-    "training_time_seconds": 25.31190800666809,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "DenoiseTransform -> EqualizationTransform -> ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "DenoiseTransform",
-      "EqualizationTransform",
-      "ColorSpaceTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.9826014913007457,
-    "alpha": 0.0024855012427507095,
-    "gamma": 2.171136292251604,
-    "weighted_alpha": 0.0011447928219066753,
-    "confusion_matrix": {
-      "TP": 583,
-      "TN": 603,
-      "FP": 13,
-      "FN": 8
-    },
-    "training_time_seconds": 25.274414539337158,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> NormalizeTransform -> DenoiseTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "NormalizeTransform",
-      "DenoiseTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.7895608947804474,
-    "alpha": -0.19055509527754755,
-    "gamma": 2.1668302738081056,
-    "weighted_alpha": -0.412900549275778,
-    "confusion_matrix": {
-      "TP": 368,
-      "TN": 585,
-      "FP": 31,
-      "FN": 223
-    },
-    "training_time_seconds": 25.224287748336792,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> NormalizeTransform -> EqualizationTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "NormalizeTransform",
-      "EqualizationTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.820215410107705,
-    "alpha": -0.15990057995028994,
-    "gamma": 2.1622093636726034,
-    "weighted_alpha": -0.34573853122519665,
-    "confusion_matrix": {
-      "TP": 403,
-      "TN": 587,
-      "FP": 29,
-      "FN": 188
-    },
-    "training_time_seconds": 25.17049527168274,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> DenoiseTransform -> NormalizeTransform -> EqualizationTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "DenoiseTransform",
-      "NormalizeTransform",
-      "EqualizationTransform"
-    ],
-    "accuracy": 0.7837613918806959,
-    "alpha": -0.19635459817729906,
-    "gamma": 2.1635286523381083,
-    "weighted_alpha": -0.4248187991749226,
-    "confusion_matrix": {
-      "TP": 369,
-      "TN": 577,
-      "FP": 39,
-      "FN": 222
-    },
-    "training_time_seconds": 25.185853242874146,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> DenoiseTransform -> EqualizationTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "DenoiseTransform",
-      "EqualizationTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.7224523612261806,
-    "alpha": -0.2576636288318144,
-    "gamma": 2.163626611815367,
-    "weighted_alpha": -0.5574878842374309,
-    "confusion_matrix": {
-      "TP": 584,
-      "TN": 288,
-      "FP": 328,
-      "FN": 7
-    },
-    "training_time_seconds": 25.18699359893799,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> EqualizationTransform -> NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "EqualizationTransform",
-      "NormalizeTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.7315658657829329,
-    "alpha": -0.24855012427506207,
-    "gamma": 2.1621112198685,
-    "weighted_alpha": -0.5373930123948217,
-    "confusion_matrix": {
-      "TP": 586,
-      "TN": 297,
-      "FP": 319,
-      "FN": 5
-    },
-    "training_time_seconds": 25.169352769851685,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "ColorSpaceTransform -> EqualizationTransform -> DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "ColorSpaceTransform",
-      "EqualizationTransform",
-      "DenoiseTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.7257663628831814,
-    "alpha": -0.2543496271748136,
-    "gamma": 2.179201001296186,
-    "weighted_alpha": -0.5542789622186653,
-    "confusion_matrix": {
-      "TP": 588,
-      "TN": 288,
-      "FP": 328,
-      "FN": 3
-    },
-    "training_time_seconds": 25.36829662322998,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> NormalizeTransform -> DenoiseTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "NormalizeTransform",
-      "DenoiseTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9809444904722452,
-    "alpha": 0.0008285004142501995,
-    "gamma": 2.1761639093282326,
-    "weighted_alpha": 0.0003807159978615545,
-    "confusion_matrix": {
-      "TP": 585,
-      "TN": 599,
-      "FP": 17,
-      "FN": 6
-    },
-    "training_time_seconds": 25.33294153213501,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> NormalizeTransform -> ColorSpaceTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "NormalizeTransform",
-      "ColorSpaceTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9643744821872411,
-    "alpha": -0.0157415078707539,
-    "gamma": 2.1775305085503898,
-    "weighted_alpha": -0.03427761363915271,
-    "confusion_matrix": {
-      "TP": 553,
-      "TN": 611,
-      "FP": 5,
-      "FN": 38
-    },
-    "training_time_seconds": 25.34885025024414,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> DenoiseTransform -> NormalizeTransform -> ColorSpaceTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "DenoiseTransform",
-      "NormalizeTransform",
-      "ColorSpaceTransform"
-    ],
-    "accuracy": 0.9792874896437448,
-    "alpha": -0.0008285004142501995,
-    "gamma": 2.1739143640420764,
-    "weighted_alpha": -0.0018010889511533193,
-    "confusion_matrix": {
-      "TP": 575,
-      "TN": 607,
-      "FP": 9,
-      "FN": 16
-    },
-    "training_time_seconds": 25.30675435066223,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> DenoiseTransform -> ColorSpaceTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "DenoiseTransform",
-      "ColorSpaceTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.9792874896437448,
-    "alpha": -0.0008285004142501995,
-    "gamma": 2.186355135730915,
-    "weighted_alpha": -0.001811396135651114,
-    "confusion_matrix": {
-      "TP": 581,
-      "TN": 601,
-      "FP": 15,
-      "FN": 10
-    },
-    "training_time_seconds": 25.451578617095947,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> ColorSpaceTransform -> NormalizeTransform -> DenoiseTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "ColorSpaceTransform",
-      "NormalizeTransform",
-      "DenoiseTransform"
-    ],
-    "accuracy": 0.9768019884009942,
-    "alpha": -0.003314001657000798,
-    "gamma": 2.1854434141984758,
-    "weighted_alpha": -0.00724256309593523,
-    "confusion_matrix": {
-      "TP": 581,
-      "TN": 598,
-      "FP": 18,
-      "FN": 10
-    },
-    "training_time_seconds": 25.440965175628662,
-    "gradcam_images": []
-  },
-  {
-    "combo_key": "EqualizationTransform -> ColorSpaceTransform -> DenoiseTransform -> NormalizeTransform",
-    "confidence_level": "high_con",
-    "transforms": [
-      "EqualizationTransform",
-      "ColorSpaceTransform",
-      "DenoiseTransform",
-      "NormalizeTransform"
-    ],
-    "accuracy": 0.980115990057995,
-    "alpha": 0.0,
-    "gamma": 2.175500332689473,
-    "weighted_alpha": 0.0,
-    "confusion_matrix": {
-      "TP": 583,
-      "TN": 600,
-      "FP": 16,
-      "FN": 8
-    },
-    "training_time_seconds": 25.32521677017212,
-    "gradcam_images": []
+    "regime": "base"
   }
 ]

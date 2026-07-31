@@ -1,19 +1,21 @@
-"""Generate all figures for the IEEE TIP paper from multi-seed analysis results."""
+"""Generate the quantitative figures for the Elsevier manuscript."""
 
 import json
-import sys
+import logging
 from collections import defaultdict
 from pathlib import Path
 
-import matplotlib
+import matplotlib as mpl
+
+mpl.use("Agg")
+
 import matplotlib.pyplot as plt
 import numpy as np
-
-matplotlib.use("Agg")
 
 ELSEVIER_COL_WIDTH = 3.5
 ELSEVIER_FONT_SIZE = 9
 ELSEVIER_TICK_SIZE = 8
+logger = logging.getLogger(__name__)
 
 TRANSFORM_ABBREV = {
 	"EqualizationTransform": "E",
@@ -30,7 +32,7 @@ TRANSFORM_FULL = {
 }
 
 
-def setup_elsevier_style():
+def setup_elsevier_style() -> None:
 	"""Configure matplotlib for Elsevier-quality output."""
 	plt.rcParams.update({
 		"font.family": "serif",
@@ -59,12 +61,91 @@ def setup_elsevier_style():
 
 
 def load_analysis(analysis_path: Path) -> dict:
-	"""Load the aggregated multi-seed analysis JSON."""
-	with analysis_path.open() as f:
+	"""Load the aggregated multi-seed analysis JSON.
+
+	Returns:
+		The decoded analysis mapping.
+	"""
+	with analysis_path.open(encoding="utf-8") as f:
 		return json.load(f)
 
 
-def fig1_length_effect(analysis: dict, outdir: Path):
+def _pipeline_label(pipeline: dict) -> str:
+	"""Return the abbreviated LaTeX label for one pipeline."""
+	if pipeline["pipeline_length"] == 0:
+		return "Baseline"
+	return r"$\to$".join(TRANSFORM_ABBREV[name] for name in pipeline["transforms"])
+
+
+def _signed(value: float, digits: int) -> str:
+	"""Format a signed decimal for a LaTeX math cell.
+
+	Returns:
+		The value with an explicit sign and the requested precision.
+	"""
+	return f"{value:+.{digits}f}"
+
+
+def write_results_table(analysis: dict, outdir: Path) -> None:
+	"""Write the page-breaking 65-pipeline results table."""
+	pipelines = analysis["base"]["aggregated_pipelines"]
+	lines = [
+		r"\begin{longtable}{@{}p{0.34\textwidth} r r c@{}}",
+		(
+			r"\caption{Pipeline performance at $\tau=0.5$, averaged across five seeds. "
+			r"The split-matched baseline averages $\varepsilon_0=98.09\%\pm0.19\%$. "
+			r"$\alpha$ is mean accuracy gain in percentage points, $\alpha_w$ is the "
+			r"secondary cost-adjusted gain in accuracy-fraction units, and CI$_{95}$ is "
+			r"the descriptive percentile-bootstrap interval for $\alpha$.}"
+			r"\label{tab:results}\\"
+		),
+		r"\toprule",
+		(
+			r"\textbf{Pipeline} & \boldmath$\alpha$\textbf{\,(pp)} & "
+			r"\boldmath$\alpha_w$ & \textbf{CI$_{95}$ (pp)} \\"
+		),
+		r"\midrule",
+		r"\endfirsthead",
+		r"\multicolumn{4}{c}{\tablename\ \thetable\ -- continued} \\",
+		r"\toprule",
+		(
+			r"\textbf{Pipeline} & \boldmath$\alpha$\textbf{\,(pp)} & "
+			r"\boldmath$\alpha_w$ & \textbf{CI$_{95}$ (pp)} \\"
+		),
+		r"\midrule",
+		r"\endhead",
+		r"\midrule",
+		r"\multicolumn{4}{r}{Continued on next page} \\",
+		r"\endfoot",
+		r"\bottomrule",
+		r"\endlastfoot",
+	]
+
+	for length in range(5):
+		label = "Baseline" if length == 0 else f"Pipeline length {length}"
+		lines.append(rf"\multicolumn{{4}}{{l}}{{\textit{{{label}}}}} \\")
+		for pipeline in pipelines:
+			if pipeline["pipeline_length"] != length:
+				continue
+			alpha = pipeline["mean_alpha"] * 100
+			weighted_alpha = pipeline["mean_weighted_alpha"]
+			ci_lower = pipeline["ci_alpha_lower"] * 100
+			ci_upper = pipeline["ci_alpha_upper"] * 100
+			lines.append(
+				f"{_pipeline_label(pipeline)} & "
+				f"${_signed(alpha, 2)}$ & "
+				f"${_signed(weighted_alpha, 3)}$ & "
+				f"$[{_signed(ci_lower, 2)},\\,{_signed(ci_upper, 2)}]$ \\\\",
+			)
+		if length < 4:
+			lines.append(r"\addlinespace")
+
+	lines.append(r"\end{longtable}")
+	(outdir / "results_table.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
+	logger.info("Generated results_table.tex")
+
+
+def fig1_length_effect(analysis: dict, outdir: Path) -> None:
 	"""Box plot of alpha by pipeline length with multi-seed mean alpha values."""
 	base = analysis["base"]
 	pipes = [p for p in base["aggregated_pipelines"] if p["pipeline_length"] > 0]
@@ -74,7 +155,7 @@ def fig1_length_effect(analysis: dict, outdir: Path):
 		by_length[p["pipeline_length"]].append(p["mean_alpha"] * 100)
 
 	lengths = [1, 2, 3, 4]
-	box_data = [by_length[L] for L in lengths]
+	box_data = [by_length[length] for length in lengths]
 
 	fig, ax = plt.subplots(figsize=(ELSEVIER_COL_WIDTH, 2.4))
 
@@ -91,15 +172,15 @@ def fig1_length_effect(analysis: dict, outdir: Path):
 	)
 
 	grays = ["#D9D9D9", "#BFBFBF", "#A6A6A6", "#808080"]
-	for patch, color in zip(bp["boxes"], grays):
+	for patch, color in zip(bp["boxes"], grays, strict=True):
 		patch.set_facecolor(color)
 		patch.set_edgecolor("black")
 
-	for i, L in enumerate(lengths):
+	for i, length in enumerate(lengths):
 		vals = box_data[i]
 		jitter = np.random.default_rng(42).uniform(-0.12, 0.12, len(vals))
 		ax.scatter(
-			np.full(len(vals), L) + jitter,
+			np.full(len(vals), length) + jitter,
 			vals,
 			s=8,
 			c="black",
@@ -110,13 +191,13 @@ def fig1_length_effect(analysis: dict, outdir: Path):
 
 	ax.axhline(y=0, color="black", linestyle="--", linewidth=0.5, alpha=0.6)
 
-	for i, L in enumerate(lengths):
+	for i, length in enumerate(lengths):
 		vals = box_data[i]
 		n_pos = sum(1 for v in vals if v > 0)
 		pct = n_pos / len(vals) * 100
 		y_top = max(vals) + 0.3
 		ax.text(
-			L,
+			length,
 			y_top,
 			f"{pct:.0f}%+",
 			ha="center",
@@ -144,26 +225,25 @@ def fig1_length_effect(analysis: dict, outdir: Path):
 	ax.set_xlabel("Pipeline length (number of transforms)")
 	ax.set_ylabel("Accuracy gain $\\alpha$ (pp)")
 	ax.set_xticks(lengths)
-	ax.set_xticklabels([f"{L}\n($n$={len(by_length[L])})" for L in lengths])
+	ax.set_xticklabels([f"{length}\n($n$={len(by_length[length])})" for length in lengths])
 
 	ax.spines["top"].set_visible(False)
 	ax.spines["right"].set_visible(False)
 
 	fig.tight_layout()
 	fig.savefig(outdir / "fig_length_effect.pdf")
-	fig.savefig(outdir / "fig_length_effect.png")
 	plt.close(fig)
-	print("  [OK] fig_length_effect.pdf")
+	logger.info("Generated fig_length_effect.pdf")
 
 
-def fig2_variance_decomposition(analysis: dict, outdir: Path):
+def fig2_variance_decomposition(analysis: dict, outdir: Path) -> None:
 	"""Stacked bar chart of selection vs ordering variance at each pipeline length."""
 	vd = analysis["base"]["statistical_tests"]["variance_decomposition"]
 
 	results = {}
-	for L_key in ("2", "3"):
-		eta_sq = vd[L_key]["anova"]["eta_squared"]
-		results[int(L_key)] = {"selection": eta_sq, "ordering": 1 - eta_sq}
+	for length_key in ("2", "3"):
+		eta_sq = vd[length_key]["anova"]["eta_squared"]
+		results[int(length_key)] = {"selection": eta_sq, "ordering": 1 - eta_sq}
 	results[4] = {"selection": 0.0, "ordering": 1.0}
 
 	fig, ax = plt.subplots(figsize=(ELSEVIER_COL_WIDTH, 2.2))
@@ -172,11 +252,17 @@ def fig2_variance_decomposition(analysis: dict, outdir: Path):
 	x = np.arange(len(bar_lengths))
 	width = 0.55
 
-	sel_vals = [results[L]["selection"] * 100 for L in bar_lengths]
-	ord_vals = [results[L]["ordering"] * 100 for L in bar_lengths]
+	sel_vals = [results[length]["selection"] * 100 for length in bar_lengths]
+	ord_vals = [results[length]["ordering"] * 100 for length in bar_lengths]
 
 	ax.bar(
-		x, sel_vals, width, label="Selection (between-set)", color="#D9D9D9", edgecolor="black", linewidth=0.5,
+		x,
+		sel_vals,
+		width,
+		label="Selection (between-set)",
+		color="#D9D9D9",
+		edgecolor="black",
+		linewidth=0.5,
 	)
 	ax.bar(
 		x,
@@ -189,9 +275,9 @@ def fig2_variance_decomposition(analysis: dict, outdir: Path):
 		linewidth=0.5,
 	)
 
-	for i, L in enumerate(bar_lengths):
-		s = results[L]["selection"] * 100
-		o = results[L]["ordering"] * 100
+	for i, length in enumerate(bar_lengths):
+		s = results[length]["selection"] * 100
+		o = results[length]["ordering"] * 100
 		if s > 8:
 			ax.text(x[i], s / 2, f"{s:.1f}%", ha="center", va="center", fontsize=6, color="black")
 		if o > 8:
@@ -199,7 +285,7 @@ def fig2_variance_decomposition(analysis: dict, outdir: Path):
 
 	n_per_length = {2: 12, 3: 24, 4: 24}
 	ax.set_xticks(x)
-	ax.set_xticklabels([f"{L}\n($n$={n_per_length[L]})" for L in bar_lengths])
+	ax.set_xticklabels([f"{length}\n($n$={n_per_length[length]})" for length in bar_lengths])
 	ax.set_xlabel("Pipeline length")
 	ax.set_ylabel("Proportion of variance (%)")
 	ax.set_ylim(0, 108)
@@ -210,24 +296,13 @@ def fig2_variance_decomposition(analysis: dict, outdir: Path):
 	ax.spines["top"].set_visible(False)
 	ax.spines["right"].set_visible(False)
 
-	ax.annotate(
-		"crossover",
-		xy=(0.5, 55),
-		xytext=(1.4, 20),
-		fontsize=6,
-		fontstyle="italic",
-		arrowprops={"arrowstyle": "->", "linewidth": 0.5, "color": "gray"},
-		color="gray",
-	)
-
 	fig.tight_layout()
 	fig.savefig(outdir / "fig_variance_decomp.pdf")
-	fig.savefig(outdir / "fig_variance_decomp.png")
 	plt.close(fig)
-	print("  [OK] fig_variance_decomp.pdf")
+	logger.info("Generated fig_variance_decomp.pdf")
 
 
-def fig3_positional_preferences(analysis: dict, outdir: Path):
+def fig3_positional_preferences(analysis: dict, outdir: Path) -> None:
 	"""Line plot of mean alpha by ordinal position for each transform with SEMs."""
 	pipes = [p for p in analysis["base"]["aggregated_pipelines"] if p["pipeline_length"] > 0]
 
@@ -306,107 +381,34 @@ def fig3_positional_preferences(analysis: dict, outdir: Path):
 
 	fig.tight_layout()
 	fig.savefig(outdir / "fig_positional.pdf")
-	fig.savefig(outdir / "fig_positional.png")
 	plt.close(fig)
-	print("  [OK] fig_positional.pdf")
+	logger.info("Generated fig_positional.pdf")
 
 
-def _resolve_gradcam_panels() -> dict | None:
-	"""Locate Grad-CAM panel PNGs for the E->N vs N->E comparison, preferring seed_42."""
-	root = Path(__file__).resolve().parent.parent.parent / "src" / "output"
-	search_roots = [root / "seed_42" / "base", root / "base"]
-	for base_dir in search_roots:
-		panels = {
-			(0, 0): base_dir / "EqualizationTransform -> NormalizeTransform" / "gradcam_pos_img_00002.png",
-			(0, 1): base_dir / "EqualizationTransform -> NormalizeTransform" / "gradcam_neg_img_00002.png",
-			(1, 0): base_dir / "NormalizeTransform -> EqualizationTransform" / "gradcam_pos_img_00002.png",
-			(1, 1): base_dir / "NormalizeTransform -> EqualizationTransform" / "gradcam_neg_img_00002.png",
-		}
-		if all(p.exists() for p in panels.values()):
-			return panels
-	return None
+def main() -> None:
+	"""Generate all figures used by the manuscript.
 
-
-def fig4_gradcam_comparison(outdir: Path):
-	"""2x2 panel: same image under mirror-ordering pipelines E->N vs N->E."""
-	from PIL import Image
-
-	panels = _resolve_gradcam_panels()
-	if panels is None:
-		print("  [SKIP] fig_gradcam.pdf — panel PNGs not found under src/output/**/base/", file=sys.stderr)
-		return
-
-	row_labels = [
-		r"E $\to$ N",
-		r"N $\to$ E",
-	]
-	col_labels = ["Positive-class activation", "Negative-class activation"]
-
-	fig, axes = plt.subplots(
-		2,
-		2,
-		figsize=(ELSEVIER_COL_WIDTH, ELSEVIER_COL_WIDTH * 0.95),
-		constrained_layout=True,
-	)
-
-	for (r, c), path in panels.items():
-		img = np.array(Image.open(path))
-		axes[r, c].imshow(img, interpolation="lanczos")
-		axes[r, c].set_xticks([])
-		axes[r, c].set_yticks([])
-		for spine in axes[r, c].spines.values():
-			spine.set_linewidth(0.4)
-
-	for c, label in enumerate(col_labels):
-		axes[0, c].set_title(label, fontsize=ELSEVIER_TICK_SIZE, pad=4)
-
-	for r, label in enumerate(row_labels):
-		axes[r, 0].set_ylabel(label, fontsize=ELSEVIER_TICK_SIZE, labelpad=4)
-
-	panel_ids = [["(a)", "(b)"], ["(c)", "(d)"]]
-	for r in range(2):
-		for c in range(2):
-			axes[r, c].text(
-				0.03,
-				0.95,
-				panel_ids[r][c],
-				transform=axes[r, c].transAxes,
-				fontsize=ELSEVIER_TICK_SIZE,
-				fontweight="bold",
-				va="top",
-				color="white",
-				bbox={"boxstyle": "round,pad=0.15", "facecolor": "black", "alpha": 0.5, "linewidth": 0},
-			)
-
-	fig.savefig(outdir / "fig_gradcam.pdf")
-	fig.savefig(outdir / "fig_gradcam.png")
-	plt.close(fig)
-	print("  [OK] fig_gradcam.pdf")
-
-
-def main():
+	Raises:
+		FileNotFoundError: If the aggregated analysis has not been generated.
+	"""
+	logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 	analysis_path = Path(__file__).resolve().parent.parent.parent / "src" / "output" / "analysis.json"
 	outdir = Path(__file__).resolve().parent
 
 	if not analysis_path.exists():
-		print(f"ERROR: {analysis_path} not found", file=sys.stderr)
-		sys.exit(1)
+		raise FileNotFoundError(f"Analysis file not found: {analysis_path}")
 
-	print(f"Loading multi-seed analysis from {analysis_path}")
+	logger.info("Loading multi-seed analysis from %s", analysis_path)
 	analysis = load_analysis(analysis_path)
 	n_pipes = len(analysis["base"]["aggregated_pipelines"])
 	n_seeds = analysis["base"]["metadata"]["n_seeds"]
-	print(f"  {n_pipes} aggregated pipelines over {n_seeds} seeds")
+	logger.info("Loaded %d aggregated pipelines over %d seeds", n_pipes, n_seeds)
 
 	setup_elsevier_style()
-
-	print("Generating figures...")
+	write_results_table(analysis, outdir)
 	fig1_length_effect(analysis, outdir)
 	fig2_variance_decomposition(analysis, outdir)
 	fig3_positional_preferences(analysis, outdir)
-	fig4_gradcam_comparison(outdir)
-
-	print("All figures generated.")
 
 
 if __name__ == "__main__":

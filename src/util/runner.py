@@ -2,7 +2,7 @@
 
 import itertools
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from time import time as timer
 
 import torch
@@ -12,8 +12,7 @@ from torch.utils.data import DataLoader
 from .cnn import BinaryCNN
 from .config import PreprocessConfig, TrainingConfig
 from .dataset import get_data_loaders
-from .gradcam import run_gradcam_analysis, select_reference_images
-from .metrics import compute_test_metrics_with_samples
+from .metrics import compute_test_metrics
 from .preprocessing import (
 	ColorSpaceTransform,
 	DenoiseTransform,
@@ -43,12 +42,11 @@ def evaluate(
 	num_epochs: int = 10,
 	verbose: bool = True,
 	gpu_transforms: list[nn.Module] | None = None,
-) -> tuple[float, ConfusionMatrix, float, nn.Module, list[dict]]:
+) -> tuple[float, ConfusionMatrix, float, nn.Module]:
 	"""Train a model and evaluate on the test set.
 
 	Orchestrates the full training loop (train_epoch + validate_epoch per epoch)
-	then computes test metrics including confusion matrix and per-sample
-	predictions (used downstream for Grad-CAM reference image selection).
+	then computes test accuracy and the confusion matrix.
 
 	Args:
 		model: The neural network model.
@@ -63,8 +61,7 @@ def evaluate(
 		gpu_transforms: Optional GPU-side preprocessing transforms.
 
 	Returns:
-		Tuple of (test_accuracy, confusion_matrix, training_duration_seconds,
-		trained_model, sample_predictions).
+		Tuple of test accuracy, confusion matrix, training duration, and model.
 	"""
 	if criterion is None:
 		criterion = _DEFAULT_CRITERION()
@@ -113,7 +110,7 @@ def evaluate(
 	if verbose:
 		logger.info("Total training duration: %.1f minutes", training_duration / 60)
 
-	test_accuracy, confusion_matrix, samples = compute_test_metrics_with_samples(
+	test_accuracy, confusion_matrix = compute_test_metrics(
 		model,
 		test_loader,
 		device,
@@ -124,7 +121,7 @@ def evaluate(
 	if verbose:
 		logger.info("Test Accuracy: %.1f%%", test_accuracy * 100)
 
-	return test_accuracy, confusion_matrix, training_duration, model, samples
+	return test_accuracy, confusion_matrix, training_duration, model
 
 
 def evaluate_model(
@@ -137,7 +134,7 @@ def evaluate_model(
 	optimizer_class: type[optim.Optimizer] = optim.Adam,
 	verbose: bool = True,
 	gpu_transforms: list[nn.Module] | None = None,
-) -> tuple[float, ConfusionMatrix, float, BinaryCNN, list[dict]]:
+) -> tuple[float, ConfusionMatrix, float, BinaryCNN]:
 	"""Create a fresh model and run full training + evaluation.
 
 	Args:
@@ -152,8 +149,7 @@ def evaluate_model(
 		gpu_transforms: Optional GPU-side preprocessing transforms.
 
 	Returns:
-		Tuple of (test_accuracy, confusion_matrix, training_time_seconds,
-		trained_model, sample_predictions).
+		Tuple of test accuracy, confusion matrix, training duration, and model.
 	"""
 	if criterion is None:
 		criterion = _DEFAULT_CRITERION()
@@ -166,7 +162,7 @@ def evaluate_model(
 
 	optimizer = optimizer_class(model.parameters(), lr=training_config.learning_rate)
 
-	test_accuracy, confusion_matrix, training_time, model, samples = evaluate(
+	test_accuracy, confusion_matrix, training_time, model = evaluate(
 		model=model,
 		criterion=criterion,
 		device=device,
@@ -179,7 +175,7 @@ def evaluate_model(
 		gpu_transforms=gpu_transforms,
 	)
 
-	return test_accuracy, confusion_matrix, training_time, model, samples
+	return test_accuracy, confusion_matrix, training_time, model
 
 
 def combo_key(transforms: tuple[nn.Module, ...]) -> str:
@@ -203,8 +199,7 @@ class CombinationResult:
 	accuracy: float
 	confusion_matrix: ConfusionMatrix
 	training_time: float
-	confidence_level: str = ""
-	gradcam_results: list[dict] = field(default_factory=list)
+	regime: str = ""
 
 
 def _build_transforms(
@@ -223,8 +218,9 @@ def _build_transforms(
 		std=[preprocess_config.normalize.std],
 	)
 	denoise = DenoiseTransform(
-		template_window_size=preprocess_config.denoise.template_window_size,
-		search_window_size=preprocess_config.denoise.search_window_size,
+		kernel_size=preprocess_config.denoise.kernel_size,
+		sigma_space=preprocess_config.denoise.sigma_space,
+		sigma_color=preprocess_config.denoise.sigma_color,
 	)
 	colorspace = ColorSpaceTransform(
 		source_space=preprocess_config.colorspace.source_space,
@@ -263,17 +259,15 @@ def run_combinations(
 	training_config: TrainingConfig,
 	device: torch.device,
 	verbose: bool = False,
-	run_gradcam: bool = True,
 	seed: int = 42,
 ) -> dict[str, CombinationResult]:
-	"""Run all 65 preprocessing combinations for one confidence level.
+	"""Run all 65 preprocessing combinations for one parameter regime.
 
 	Args:
-		preprocess_config: Preprocessing parameters for this confidence level.
+		preprocess_config: Preprocessing parameters for this regime.
 		training_config: Training hyperparameters.
 		device: Target device.
 		verbose: Whether to log per-model training progress.
-		run_gradcam: Whether to run Grad-CAM analysis after each model trains.
 		seed: Random seed for data splitting.
 
 	Returns:
@@ -291,13 +285,13 @@ def run_combinations(
 
 		logger.info(
 			"[%s] Running %d/%d: %s",
-			preprocess_config.confidence_level,
+			preprocess_config.regime,
 			i + 1,
 			len(all_combos),
 			key,
 		)
 
-		accuracy, confusion_matrix, training_time, model, samples = evaluate_model(
+		accuracy, confusion_matrix, training_time, model = evaluate_model(
 			device=device,
 			train_loader=train_loader,
 			test_loader=test_loader,
@@ -307,24 +301,13 @@ def run_combinations(
 			gpu_transforms=gpu_transforms,
 		)
 
-		gradcam_results: list[dict] = []
-		if run_gradcam:
-			reference_images = select_reference_images(samples)
-			gradcam_results = run_gradcam_analysis(
-				model=model,
-				reference_images=reference_images,
-				device=device,
-				gpu_transforms=gpu_transforms,
-			)
-
 		results[key] = CombinationResult(
 			combo_key=key,
 			transforms=tuple(t.__class__.__name__ for t in combo),
 			accuracy=accuracy,
 			confusion_matrix=confusion_matrix,
 			training_time=training_time,
-			confidence_level=preprocess_config.confidence_level,
-			gradcam_results=gradcam_results,
+			regime=preprocess_config.regime,
 		)
 
 		del model
@@ -338,27 +321,25 @@ def run_pipeline(
 	training_config: TrainingConfig,
 	device: torch.device,
 	verbose: bool = False,
-	run_gradcam: bool = True,
 	seed: int = 42,
 ) -> dict[str, CombinationResult]:
-	"""Run the full 65-combination pipeline for one confidence level.
+	"""Run the full 65-combination pipeline for one parameter regime.
 
 	Args:
 		preprocess_config: Preprocessing parameters.
 		training_config: Training hyperparameters.
 		device: Target device.
 		verbose: Whether to log per-model training progress.
-		run_gradcam: Whether to run Grad-CAM analysis after each model trains.
 		seed: Random seed for data splitting.
 
 	Returns:
 		Dict mapping combo_key to CombinationResult.
 	"""
-	logger.info("Starting pipeline for confidence level: %s (seed=%d)", preprocess_config.confidence_level, seed)
-	results = run_combinations(preprocess_config, training_config, device, verbose, run_gradcam, seed)
+	logger.info("Starting pipeline for regime: %s (seed=%d)", preprocess_config.regime, seed)
+	results = run_combinations(preprocess_config, training_config, device, verbose, seed)
 	logger.info(
 		"Pipeline complete for %s: %d combinations evaluated",
-		preprocess_config.confidence_level,
+		preprocess_config.regime,
 		len(results),
 	)
 	return results
@@ -369,38 +350,35 @@ def run_full_experiment(
 	preprocess_configs: list[PreprocessConfig],
 	device: torch.device,
 	verbose: bool = False,
-	run_gradcam: bool = True,
 	seed: int = 42,
 ) -> dict[str, dict[str, CombinationResult]]:
-	"""Run all combinations for all confidence levels.
+	"""Run all combinations for all preprocessing regimes.
 
 	Args:
 		training_config: Training hyperparameters.
-		preprocess_configs: List of PreprocessConfig (one per confidence level).
+		preprocess_configs: Preprocessing parameter regimes to evaluate.
 		device: Target device.
 		verbose: Whether to log per-model training progress.
-		run_gradcam: Whether to run Grad-CAM analysis after each model trains.
 		seed: Random seed for data splitting.
 
 	Returns:
-		Nested dict: {confidence_level: {combo_key: CombinationResult}}.
+		Nested dict: {regime: {combo_key: CombinationResult}}.
 	"""
 	results: dict[str, dict[str, CombinationResult]] = {}
 
 	for config in preprocess_configs:
-		logger.info("=== Confidence level: %s (seed=%d) ===", config.confidence_level, seed)
-		results[config.confidence_level] = run_pipeline(
+		logger.info("=== Preprocessing regime: %s (seed=%d) ===", config.regime, seed)
+		results[config.regime] = run_pipeline(
 			config,
 			training_config,
 			device,
 			verbose,
-			run_gradcam,
 			seed,
 		)
 
 	total = sum(len(v) for v in results.values())
 	logger.info(
-		"Full experiment complete: %d total evaluations across %d confidence levels (seed=%d)",
+		"Full experiment complete: %d total evaluations across %d preprocessing regimes (seed=%d)",
 		total,
 		len(results),
 		seed,

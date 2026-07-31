@@ -17,8 +17,9 @@ class NormalizeConfig:
 class DenoiseConfig:
 	"""Parameters for DenoiseTransform."""
 
-	template_window_size: int
-	search_window_size: int
+	kernel_size: int
+	sigma_space: float
+	sigma_color: float
 
 
 @dataclass(frozen=True)
@@ -31,12 +32,12 @@ class ColorSpaceConfig:
 
 @dataclass(frozen=True)
 class PreprocessConfig:
-	"""Full preprocessing parameter set for one confidence level."""
+	"""Full preprocessing parameter set for one experimental regime."""
 
 	normalize: NormalizeConfig
 	denoise: DenoiseConfig
 	colorspace: ColorSpaceConfig
-	confidence_level: str
+	regime: str
 
 
 @dataclass(frozen=True)
@@ -54,14 +55,14 @@ class TrainingConfig:
 
 def load_configs(
 	path: str | Path = "parameters.toml",
-) -> tuple[TrainingConfig, PreprocessConfig, PreprocessConfig]:
-	"""Load parameters.toml and return (training, base_preprocess, high_con_preprocess).
+) -> tuple[TrainingConfig, PreprocessConfig]:
+	"""Load the training and primary preprocessing configurations.
 
 	Args:
 		path: Path to the TOML configuration file.
 
 	Returns:
-		A 3-tuple of (TrainingConfig, base PreprocessConfig, high_con PreprocessConfig).
+		The training and preprocessing configurations.
 	"""
 	raw = tomllib.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -83,30 +84,15 @@ def load_configs(
 			std=preprocess["normalize"]["std"],
 		),
 		denoise=DenoiseConfig(
-			template_window_size=preprocess["denoise"]["template_window_size"],
-			search_window_size=preprocess["denoise"]["search_window_size"],
+			kernel_size=preprocess["denoise"]["kernel_size"],
+			sigma_space=preprocess["denoise"]["sigma_space"],
+			sigma_color=preprocess["denoise"]["sigma_color"],
 		),
 		colorspace=ColorSpaceConfig(
 			source_space=preprocess["colorspace"]["source_space"],
 			target_space=preprocess["colorspace"]["target_space"],
 		),
-		confidence_level="base",
+		regime="base",
 	)
 
-	high_con = PreprocessConfig(
-		normalize=NormalizeConfig(
-			mean=preprocess["normalize"]["high_con"]["mean"],
-			std=preprocess["normalize"]["high_con"]["std"],
-		),
-		denoise=DenoiseConfig(
-			template_window_size=preprocess["denoise"]["high_con"]["template_window_size"],
-			search_window_size=preprocess["denoise"]["high_con"]["search_window_size"],
-		),
-		colorspace=ColorSpaceConfig(
-			source_space=preprocess["colorspace"]["high_con"]["source_space"],
-			target_space=preprocess["colorspace"]["high_con"]["target_space"],
-		),
-		confidence_level="high_con",
-	)
-
-	return training, base, high_con
+	return training, base

@@ -1,8 +1,9 @@
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
+from typing import ClassVar
 
 import kornia
 import torch
-import torchvision.transforms.functional as TF
+import torchvision.transforms.functional as tv_functional
 from torch import Tensor, nn
 
 
@@ -22,7 +23,11 @@ def apply_gpu_transforms(batch: Tensor, transforms: Sequence[nn.Module]) -> Tens
 
 
 class NormalizeTransform(nn.Module):
-	"""Normalize a tensor image with mean and standard deviation (GPU-compatible via nn.Module)."""
+	"""Apply a fixed per-channel affine transform.
+
+	The configured values are constants. They are not estimated from each image
+	or from the training set.
+	"""
 
 	def __init__(
 		self,
@@ -46,41 +51,48 @@ class NormalizeTransform(nn.Module):
 		Returns:
 			Normalized tensor.
 		"""
-		return TF.normalize(tensor, self.mean.tolist(), self.std.tolist())
+		return tv_functional.normalize(tensor, self.mean.tolist(), self.std.tolist())
 
 
 class DenoiseTransform(nn.Module):
-	"""
-	Apply denoising to the input image using bilateral filtering (GPU-accelerated via kornia).
+	"""Apply Kornia bilateral filtering.
+
+	Input tensors are not rescaled before filtering.
 	"""
 
-	def __init__(self, h=10, template_window_size=7, search_window_size=21):
+	def __init__(
+		self,
+		kernel_size: int = 7,
+		sigma_space: float = 21,
+		sigma_color: float = 10,
+	) -> None:
+		"""Initialize the bilateral-filter parameters."""
 		super().__init__()
-		# Map OpenCV NLM params to bilateral blur params:
-		# template_window_size -> kernel_size (must be odd)
-		kernel_size = template_window_size if template_window_size % 2 == 1 else template_window_size + 1
+		kernel_size = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
 		self.kernel_size = (kernel_size, kernel_size)
-		# h -> sigma_color (filter strength)
-		self.sigma_color = float(h)
-		# search_window_size -> sigma_space
-		self.sigma_space = (float(search_window_size), float(search_window_size))
+		self.sigma_color = float(sigma_color)
+		self.sigma_space = (float(sigma_space), float(sigma_space))
 
-	def forward(self, img):
+	def forward(self, img: Tensor) -> Tensor:
+		"""Filter one image or a batch of images.
+
+		Returns:
+			The bilateral-filtered tensor.
+		"""
 		if not isinstance(img, torch.Tensor):
-			img = TF.to_tensor(img)
+			img = tv_functional.to_tensor(img)
 
-		# bilateral_blur expects (B, C, H, W)
 		needs_batch = img.dim() == 3
 		if needs_batch:
 			img = img.unsqueeze(0)
 
-		# bilateral_blur unfolds the input to B×C×H×W×K², so large batches
+		# bilateral_blur unfolds input to B x C x H x W x K^2, so large batches
 		# with large kernels can exhaust GPU memory.
-		_MAX_CHUNK = 32
-		if img.size(0) > _MAX_CHUNK:
+		max_chunk = 32
+		if img.size(0) > max_chunk:
 			denoised = torch.cat([
 				kornia.filters.bilateral_blur(chunk, self.kernel_size, self.sigma_color, self.sigma_space)
-				for chunk in img.split(_MAX_CHUNK)
+				for chunk in img.split(max_chunk)
 			])
 		else:
 			denoised = kornia.filters.bilateral_blur(img, self.kernel_size, self.sigma_color, self.sigma_space)
@@ -92,21 +104,29 @@ class DenoiseTransform(nn.Module):
 
 
 class ColorSpaceTransform(nn.Module):
-	"""
-	Change the color space of the input image (GPU-accelerated via kornia).
-	Supported color spaces: 'RGB', 'BGR', 'HSV', 'LAB', 'YUV'
+	"""Change the tensor's color representation with Kornia.
+
+	Supported color spaces are RGB, BGR, HSV, LAB, and YUV. Kornia represents
+	HSV hue in radians, so RGB-to-HSV output is not confined to the unit cube.
+	The transform clamps its input to [0, 1] before conversion, matching the
+	released experiment.
 	"""
 
-	_CONVERSIONS = {
+	_CONVERSIONS: ClassVar[dict[tuple[str, str], Callable[[Tensor], Tensor]]] = {
 		("RGB", "HSV"): kornia.color.rgb_to_hsv,
-		("RGB", "LAB"): lambda x: kornia.color.rgb_to_lab(x),
+		("RGB", "LAB"): kornia.color.rgb_to_lab,
 		("HSV", "RGB"): kornia.color.hsv_to_rgb,
-		("LAB", "RGB"): lambda x: kornia.color.lab_to_rgb(x),
+		("LAB", "RGB"): kornia.color.lab_to_rgb,
 		("RGB", "YUV"): kornia.color.rgb_to_yuv,
 		("YUV", "RGB"): kornia.color.yuv_to_rgb,
 	}
 
-	def __init__(self, source_space="RGB", target_space="HSV"):
+	def __init__(self, source_space: str = "RGB", target_space: str = "HSV") -> None:
+		"""Select the declared source and target color spaces.
+
+		Raises:
+			ValueError: If the conversion pair is unsupported.
+		"""
 		super().__init__()
 		self.source_space = source_space
 		self.target_space = target_space
@@ -119,15 +139,20 @@ class ColorSpaceTransform(nn.Module):
 				raise ValueError(f"Unsupported color space conversion: {source_space} to {target_space}")
 			self._convert = self._CONVERSIONS[key]
 
-	def forward(self, img):
+	def forward(self, img: Tensor) -> Tensor:
+		"""Convert one image or a batch after clamping its values to [0, 1].
+
+		Returns:
+			The converted tensor.
+		"""
 		if not isinstance(img, torch.Tensor):
-			img = TF.to_tensor(img)
+			img = tv_functional.to_tensor(img)
 
 		needs_batch = img.dim() == 3
 		if needs_batch:
 			img = img.unsqueeze(0)
 
-		# Clamp to [0, 1] — kornia color conversions expect this range;
+		# Kornia color conversions expect [0, 1];
 		# upstream transforms (e.g. normalization) may shift values outside it.
 		img = img.clamp(0.0, 1.0)
 
@@ -140,21 +165,29 @@ class ColorSpaceTransform(nn.Module):
 
 
 class EqualizationTransform(nn.Module):
-	"""
-	Apply histogram equalization to the input image (GPU-accelerated via kornia).
-	Equalizes only the Y (luminance) channel in YUV space, preserving color.
+	"""Equalize the Y channel after treating a three-channel input as RGB.
+
+	The input is clamped to [0, 1]. The pipeline runner does not track color
+	space, so an equalization step placed after RGB-to-HSV conversion still
+	interprets the three channels as RGB. This behavior is retained to reproduce
+	the released experiment and is a stated limitation of the paper.
 	"""
 
-	def forward(self, img):
+	def forward(self, img: Tensor) -> Tensor:
+		"""Equalize one image or a batch of images.
+
+		Returns:
+			The equalized tensor.
+		"""
 		if not isinstance(img, torch.Tensor):
-			img = TF.to_tensor(img)
+			img = tv_functional.to_tensor(img)
 
 		needs_batch = img.dim() == 3
 		if needs_batch:
 			img = img.unsqueeze(0)
 
-		# Clamp to [0, 1] — upstream transforms (e.g. normalization) may shift
-		# values outside the range that equalization and YUV conversion require.
+		# Normalization may shift values outside the range required by
+		# equalization and YUV conversion.
 		img = img.clamp(0.0, 1.0)
 
 		if img.shape[-3] == 3:

@@ -1,24 +1,17 @@
-"""Quantify the cross-source shortcut available to the classifier.
+"""Measure label separability from low-level color descriptors.
 
-The two classes originate from different acquisition sources stored in different
-formats: the negative (healthy) class is 512x512 lossless PNG, while the positive
-(diseased) class is 600x450 baseline JPEG from the ISIC/HAM10000 archive. Source-
-correlated low-level signatures -- global colour balance, illumination, and JPEG
-quantisation residuals -- are therefore perfectly aligned with the diagnostic
-label. This script measures how much of the label is recoverable from such
-signatures ALONE.
-
-To isolate the confound from genuine pathology, every image is resized to a common
-square (discarding the trivial native-resolution and aspect-ratio cues) and reduced
-to spatially-agnostic colour descriptors that cannot encode lesion shape, border,
-or texture:
+The negative and positive classes come from different acquisition sources, so
+source and class are perfectly aligned. Every image is resized to a common square
+to remove native-resolution and aspect-ratio cues, then reduced to spatially
+agnostic descriptors that omit lesion shape, border, and spatial texture:
 
   * colour moments (6-D): per-channel mean and standard deviation;
   * colour histogram (48-D): per-channel 16-bin intensity distribution.
 
-A *linear* classifier is fit on each descriptor. High test accuracy demonstrates a
-shortcut-learning risk: accuracy attainable without any morphological information
-bounds how much of the headline ~98% need reflect pathology discrimination at all.
+A linear classifier is fit on each descriptor. High test accuracy shows that the
+label is recoverable from global color alone and is consistent with a low-level
+shortcut. Because acquisition source and pathology are not independently varied,
+the probe cannot attribute that separability uniquely to either one.
 
 positive class = diseased (label 1); negative class = healthy (label 0), matching
 the ``enumerate(["healthy", "diseased"])`` ordering in :mod:`util.dataset`.
@@ -36,12 +29,10 @@ from sklearn.metrics import balanced_accuracy_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-# dataset/ lives beside this script (src/dataset), matching util.dataset's root_dir.
 DATASET_ROOT = Path(__file__).resolve().parent / "dataset"
 CLASS_LABELS = {"healthy": 0, "diseased": 1}
 
-# Common square removes the native-resolution/aspect shortcut so only colour and
-# compression residuals remain; the size itself is immaterial to global moments.
+# A common square removes native-resolution and aspect-ratio shortcuts.
 RESIZE = 64
 HIST_BINS = 16
 SAMPLE_PER_CLASS = 3000
@@ -61,14 +52,18 @@ def _descriptors(path: Path) -> tuple[np.ndarray, np.ndarray]:
 
 	moments = np.concatenate([pixels.mean(axis=0), pixels.std(axis=0)])
 
-	histogram = np.concatenate(
-		[np.histogram(pixels[:, channel], bins=HIST_BINS, range=(0.0, 1.0), density=True)[0] for channel in range(3)]
-	)
+	histogram = np.concatenate([
+		np.histogram(pixels[:, channel], bins=HIST_BINS, range=(0.0, 1.0), density=True)[0] for channel in range(3)
+	])
 	return moments, histogram
 
 
 def _sampled_paths(class_name: str, rng: np.random.Generator) -> list[Path]:
-	"""Deterministically sample image paths for one class."""
+	"""Deterministically sample image paths for one class.
+
+	Returns:
+		The selected paths in stable order.
+	"""
 	paths = sorted((DATASET_ROOT / class_name).iterdir())
 	if len(paths) > SAMPLE_PER_CLASS:
 		chosen = rng.choice(len(paths), size=SAMPLE_PER_CLASS, replace=False)
@@ -77,9 +72,17 @@ def _sampled_paths(class_name: str, rng: np.random.Generator) -> list[Path]:
 
 
 def _evaluate(features: np.ndarray, labels: np.ndarray, name: str) -> dict[str, float | int]:
-	"""Fit a standardised linear classifier and report held-out performance."""
+	"""Fit a standardised linear classifier and report held-out performance.
+
+	Returns:
+		The evaluation configuration and held-out metrics.
+	"""
 	x_train, x_test, y_train, y_test = train_test_split(
-		features, labels, test_size=TEST_SIZE, stratify=labels, random_state=SEED
+		features,
+		labels,
+		test_size=TEST_SIZE,
+		stratify=labels,
+		random_state=SEED,
 	)
 	scaler = StandardScaler().fit(x_train)
 	model = LogisticRegression(max_iter=1000, random_state=SEED)
@@ -128,7 +131,7 @@ def main() -> None:
 	for row in results:
 		print(
 			f"{row['feature_set']:24s}{row['n_features']}\t"
-			f"{row['accuracy']:.4f}\t\t{row['balanced_accuracy']:.4f}\t\t{row['auroc']:.4f}"
+			f"{row['accuracy']:.4f}\t\t{row['balanced_accuracy']:.4f}\t\t{row['auroc']:.4f}",
 		)
 
 	Path("output/shortcut_probe.json").write_text(
@@ -144,7 +147,8 @@ def main() -> None:
 				"results": results,
 			},
 			indent=2,
-		)
+		),
+		encoding="utf-8",
 	)
 	print("\nWrote output/shortcut_probe.json")
 

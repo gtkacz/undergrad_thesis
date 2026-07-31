@@ -1,131 +1,138 @@
- [project]
- name = "tcc"
- version = "0.1.0"
- description = "TCC project"
- readme = "README.md"
- requires-python = ">3.12,<3.14"
- dependencies = [
-     "matplotlib",
-     "datasets",
-     "pandas",
-     "tabulate",
-     "torch",
-     "torchvision",
-     "kornia>=0.7.0",
-     "ipykernel",
-     "grad-cam",
-     "numpyencoder>=0.3.2",
+[project]
+name = "transform-ordering-selection"
+version = "0.1.0"
+description = "Reproducibility code for transform-ordering experiments in CNN preprocessing"
+readme = "README.md"
+requires-python = ">3.12,<3.14"
+dependencies = [
+    "kornia>=0.7.0",
+    "matplotlib",
+    "numpy",
+    "numpyencoder>=0.3.2",
+    "pillow",
+    "scikit-learn",
+    "scipy",
+    "torch",
+    "torchvision",
 ]
 
- [tool.uv]
- # Use the standard `project.dependencies` as the source of truth.
+[dependency-groups]
+dev = ["ruff"]
 
- [[tool.uv.index]]
- name = "pytorch-cu128"
- url = "https://download.pytorch.org/whl/cu128"
- explicit = true
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
 
- [tool.uv.sources]
- torch = { index = "pytorch-cu128" }
- torchvision = { index = "pytorch-cu128" }
- triton = { index = "pytorch-cu128" }
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+torchvision = { index = "pytorch-cu128" }
+triton = { index = "pytorch-cu128" }
 
- [tool.ruff]
- exclude = [
-     ".bzr",
-     ".direnv",
-     ".eggs",
-     ".git",
-     ".git-rewrite",
-     ".hg",
-     ".ipynb_checkpoints",
-     ".mypy_cache",
-     ".nox",
-     ".pants.d",
-     ".pyenv",
-     ".pytest_cache",
-     ".pytype",
-     ".ruff_cache",
-     ".svn",
-     ".tox",
-     ".venv",
-     ".vscode",
-     "__pypackages__",
-     "_build",
-     "buck-out",
-     "build",
-     "dist",
-     "node_modules",
-     "site-packages",
-     "venv",
-     "__*.py",
- ]
- line-length = 120
- indent-width = 4
- target-version = "py313"
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "__*.py",
+]
+line-length = 120
+indent-width = 4
+target-version = "py313"
 
- [tool.ruff.lint]
- preview = true
- select = ["ALL"]
- ignore = [
-     "E721",
-     "D211",
-     "D212",
-     "W191",
-     "D206",
-     "D404",
-     "D203",
-     "CPY001",
-     "EM102",
-     "TRY003",
-     "PLR0904",
-     "D205",
-     "TID252",
-     "D100",
-     "D200",
-     "S603",
-     "S404",
-     "S602",
-     "TRY301",
-     "C417",
-     "FA100",
-     "EM101",
-     "PLR2004",
-     "FURB113",
-     "E741",
-     "UP007",
-     "UP045",
-     "PLR0913",
-     "PLR0917",
-     "PLW2901",
-     "FBT001",
-     "FBT002",
-     "RUF001",
-     "RUF002",
-     "ARG001",
-     "ERA001"
- ]
- extend-select = ["DOC"]
- fixable = ["ALL"]
- unfixable = []
- dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+[tool.ruff.lint]
+preview = true
+select = ["ALL"]
+ignore = [
+    "E721",
+    "D211",
+    "D212",
+    "W191",
+    "D206",
+    "D404",
+    "D203",
+    "CPY001",
+    "EM102",
+    "TRY003",
+    "PLR0904",
+    "D205",
+    "TID252",
+    "D100",
+    "D200",
+    "S603",
+    "S404",
+    "S602",
+    "TRY301",
+    "C417",
+    "FA100",
+    "EM101",
+    "PLR2004",
+    "FURB113",
+    "E741",
+    "UP007",
+    "UP045",
+    "PLR0913",
+    "PLR0917",
+    "PLW2901",
+    "FBT001",
+    "FBT002",
+    "RUF001",
+    "RUF002",
+    "ARG001",
+    "ERA001",
+    "COM812",
+]
+extend-select = ["DOC"]
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
- [tool.ruff.format]
- preview = true
- quote-style = "double"
- docstring-code-format = true
- indent-style = "tab"
- skip-magic-trailing-comma = false
- line-ending = "auto"
+[tool.ruff.format]
+preview = true
+quote-style = "double"
+docstring-code-format = true
+indent-style = "tab"
+skip-magic-trailing-comma = false
+line-ending = "auto"
 
- [tool.ruff.lint.per-file-ignores]
- "**/__init__.py" = ["F401"]
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["F401"]
+"paper/final/generate_figures.py" = ["INP001", "PLR0914"]
+"src/analyze.py" = ["C901"]
+"src/compute_clinical_metrics.py" = ["T201"]
+"src/shortcut_probe.py" = ["T201"]
+"src/util/preprocessing.py" = ["PLR6301"]
+"src/verify_dataset.py" = ["T201"]
+"tests/**" = ["D102", "PLC2701", "PT009", "PT027"]
 
- [tool.ruff.lint.flake8-quotes]
- inline-quotes = "double"
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"
 
- [tool.ruff.lint.pydocstyle]
- convention = "google"
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
- [tool.ruff.lint.pycodestyle]
- max-doc-length = 320
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 320

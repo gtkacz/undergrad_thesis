@@ -159,8 +159,18 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Pipeline output
+# Pipeline output: keep only the compact reproducibility artifacts.
 output/
+!src/output/
+src/output/*
+!src/output/.gitkeep
+!src/output/analysis.json
+!src/output/clinical_metrics.json
+!src/output/shortcut_probe.json
+!src/output/seed_manifest.json
+!src/output/seed_*/
+src/output/seed_*/*
+!src/output/seed_*/results_matrix.json
 params/
 
 # Custom
@@ -174,8 +184,12 @@ _*
 *.jpeg
 *.pptx
 .ruff_cache/
+.firecrawl/
 .qodo
 .serena/
 *.pdf
+!paper/final/fig_length_effect.pdf
+!paper/final/fig_positional.pdf
+!paper/final/fig_variance_decomp.pdf
 *.zip
 *.xls

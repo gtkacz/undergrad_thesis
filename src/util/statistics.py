@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import operator
 from dataclasses import dataclass
+from itertools import product
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -72,13 +73,13 @@ def bootstrap_ci(
 	"""Compute bootstrap confidence interval for the mean.
 
 	Args:
-	    values: 1-D array of observations.
-	    n_bootstrap: Number of bootstrap resamples.
-	    confidence: Confidence level (e.g. 0.95 for 95% CI).
-	    rng: Optional random generator for reproducibility.
+		values: 1-D array of observations.
+		n_bootstrap: Number of bootstrap resamples.
+		confidence: Confidence level (e.g. 0.95 for 95% CI).
+		rng: Optional random generator for reproducibility.
 
 	Returns:
-	    BootstrapCI with mean, lower, upper, and std.
+		BootstrapCI with mean, lower, upper, and std.
 	"""
 	if rng is None:
 		rng = np.random.default_rng(42)
@@ -103,10 +104,10 @@ def one_way_anova(
 	"""One-way ANOVA with eta-squared and Shapiro-Wilk normality test on residuals.
 
 	Args:
-	    groups: List of arrays, one per group.
+		groups: List of arrays, one per group.
 
 	Returns:
-	    ANOVAResult with F-statistic, p-value, eta-squared, and normality check.
+		ANOVAResult with F-statistic, p-value, eta-squared, and normality check.
 	"""
 	f_stat, p_val = stats.f_oneway(*groups)
 
@@ -151,13 +152,13 @@ def permutation_test(
 	"""Two-sample permutation test on difference of means, with Cohen's d.
 
 	Args:
-	    group_a: First group observations.
-	    group_b: Second group observations.
-	    n_permutations: Number of random permutations.
-	    rng: Optional random generator for reproducibility.
+		group_a: First group observations.
+		group_b: Second group observations.
+		n_permutations: Number of random permutations.
+		rng: Optional random generator for reproducibility.
 
 	Returns:
-	    PermutationTestResult with observed statistic, p-value, and Cohen's d.
+		PermutationTestResult with observed statistic, p-value, and Cohen's d.
 	"""
 	if rng is None:
 		rng = np.random.default_rng(42)
@@ -174,7 +175,7 @@ def permutation_test(
 		if abs(perm_diff) >= abs(observed_diff):
 			extreme_count += 1
 
-	p_value = extreme_count / n_permutations
+	p_value = (extreme_count + 1) / (n_permutations + 1)
 
 	pooled_std = float(
 		np.sqrt(
@@ -186,7 +187,7 @@ def permutation_test(
 
 	return PermutationTestResult(
 		observed_statistic=observed_diff,
-		p_value=p_value,
+		p_value=float(p_value),
 		cohens_d=float(cohens_d),
 		n_permutations=n_permutations,
 	)
@@ -201,13 +202,13 @@ def permutation_correlation_test(
 	"""Permutation test on Pearson correlation coefficient.
 
 	Args:
-	    x: Independent variable.
-	    y: Dependent variable.
-	    n_permutations: Number of random permutations.
-	    rng: Optional random generator for reproducibility.
+		x: Independent variable.
+		y: Dependent variable.
+		n_permutations: Number of random permutations.
+		rng: Optional random generator for reproducibility.
 
 	Returns:
-	    PermutationTestResult with observed r, p-value, and effect size (r itself).
+		PermutationTestResult with observed r, p-value, and effect size (r itself).
 	"""
 	if rng is None:
 		rng = np.random.default_rng(42)
@@ -224,7 +225,7 @@ def permutation_correlation_test(
 
 	return PermutationTestResult(
 		observed_statistic=observed_r,
-		p_value=extreme_count / n_permutations,
+		p_value=(extreme_count + 1) / (n_permutations + 1),
 		cohens_d=observed_r,
 		n_permutations=n_permutations,
 	)
@@ -237,116 +238,71 @@ def holm_bonferroni(
 	"""Apply Holm-Bonferroni correction to a family of p-values.
 
 	Args:
-	    tests: List of (test_name, raw_p_value) tuples.
-	    alpha: Family-wise significance level.
+		tests: List of (test_name, raw_p_value) tuples.
+		alpha: Family-wise significance level.
 
 	Returns:
-	    List of CorrectedPValue, sorted by raw p-value.
+		List of CorrectedPValue, sorted by raw p-value.
 	"""
 	sorted_tests = sorted(tests, key=operator.itemgetter(1))
 	n = len(sorted_tests)
 	results: list[CorrectedPValue] = []
 
-	any_failed = False
-	for i, (name, raw_p) in enumerate(sorted_tests):
-		adjusted_alpha = alpha / (n - i)
+	raw_adjusted = [min(raw_p * (n - i), 1.0) for i, (_, raw_p) in enumerate(sorted_tests)]
+	adjusted_p_values: list[float] = []
+	running_max = 0.0
+	for value in raw_adjusted:
+		running_max = max(running_max, value)
+		adjusted_p_values.append(running_max)
 
-		if any_failed:
-			significant = False
-		elif raw_p > adjusted_alpha:
-			significant = False
-			any_failed = True
-		else:
-			significant = True
-
-		corrected_p = min(raw_p * (n - i), 1.0)
-
+	for (name, raw_p), corrected_p in zip(sorted_tests, adjusted_p_values, strict=True):
 		results.append(
 			CorrectedPValue(
 				test_name=name,
 				raw_p=raw_p,
 				corrected_p=corrected_p,
-				significant=significant,
+				significant=corrected_p <= alpha,
 			),
 		)
 
 	return results
 
 
-def benjamini_hochberg(
-	tests: list[tuple[str, float]],
-	alpha: float = 0.05,
-) -> list[CorrectedPValue]:
-	"""Apply Benjamini-Hochberg FDR correction to a family of p-values.
-
-	Controls the false discovery rate (expected proportion of false positives
-	among discoveries) at level alpha. Less conservative than Holm-Bonferroni,
-	appropriate for large families where FWER control is excessive.
+def paired_sign_flip_test(
+	group_a: NDArray[np.floating],
+	group_b: NDArray[np.floating],
+) -> PermutationTestResult:
+	"""Run an exact paired sign-flip test on the mean difference.
 
 	Args:
-	    tests: List of (test_name, raw_p_value) tuples.
-	    alpha: Desired FDR level.
+		group_a: First observation from every pair.
+		group_b: Second observation from every pair.
 
 	Returns:
-	    List of CorrectedPValue with BH-adjusted q-values, sorted by raw p.
+		An exact two-sided p-value and paired-sample Cohen's dz.
+
+	Raises:
+		ValueError: If the groups are not one-dimensional matched pairs.
 	"""
-	sorted_tests = sorted(tests, key=operator.itemgetter(1))
-	n = len(sorted_tests)
+	if group_a.shape != group_b.shape:
+		raise ValueError("paired groups must have identical shapes")
+	if group_a.ndim != 1 or len(group_a) < 2:
+		raise ValueError("paired groups must be one-dimensional with at least two pairs")
 
-	raw_qs: list[float] = [
-		min(raw_p * n / (i + 1), 1.0) for i, (_, raw_p) in enumerate(sorted_tests)
-	]
-
-	# Enforce monotonicity: step-up from largest to smallest
-	adjusted_qs: list[float] = [0.0] * n
-	running_min = 1.0
-	for i in range(n - 1, -1, -1):
-		running_min = min(running_min, raw_qs[i])
-		adjusted_qs[i] = running_min
-
-	return [
-		CorrectedPValue(
-			test_name=name,
-			raw_p=raw_p,
-			corrected_p=q,
-			significant=q <= alpha,
-		)
-		for (name, raw_p), q in zip(sorted_tests, adjusted_qs, strict=True)
-	]
-
-
-def bootstrap_p_value(
-	values: NDArray[np.floating],
-	null_value: float = 0.0,
-	n_bootstrap: int = 10_000,
-	rng: np.random.Generator | None = None,
-) -> float:
-	"""Two-sided bootstrap p-value for H0: mean == null_value.
-
-	Centers the sample at null_value, then resamples with replacement to
-	construct the null distribution of the mean. The p-value is the
-	fraction of null means at least as extreme as the observed mean.
-
-	Args:
-	    values: Observed values.
-	    null_value: Null hypothesis mean.
-	    n_bootstrap: Number of bootstrap resamples.
-	    rng: Optional random generator for reproducibility.
-
-	Returns:
-	    Two-sided p-value (Phipson & Smyth adjustment applied for stability).
-	"""
-	if rng is None:
-		rng = np.random.default_rng(42)
-
-	observed_mean = float(np.mean(values))
-	observed_deviation = abs(observed_mean - null_value)
-
-	centered = values - observed_mean + null_value
+	differences = group_a - group_b
+	observed_diff = float(np.mean(differences))
 	null_means = np.array([
-		rng.choice(centered, size=len(centered), replace=True).mean() for _ in range(n_bootstrap)
+		np.mean(differences * np.asarray(signs)) for signs in product((-1.0, 1.0), repeat=len(differences))
 	])
+	extreme_count = int(np.sum(np.abs(null_means) >= abs(observed_diff)))
+	p_value = extreme_count / len(null_means)
 
-	extreme = int(np.sum(np.abs(null_means - null_value) >= observed_deviation))
-	# Phipson-Smyth +1 smoothing avoids reporting p = 0
-	return float((extreme + 1) / (n_bootstrap + 1))
+	difference_std = float(np.std(differences, ddof=1))
+	cohens_dz = observed_diff / difference_std if difference_std > 0 else float("inf")
+
+	return PermutationTestResult(
+		observed_statistic=observed_diff,
+		p_value=float(p_value),
+		cohens_d=float(cohens_dz),
+		n_permutations=len(null_means),
+	)

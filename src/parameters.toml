@@ -1,7 +1,4 @@
 [TRAINING]
-healthy_skin_path = './dataset/healthy/'
-diseased_skin_path = './dataset/diseased/'
-training_dataset_ratio = 0.8
 num_epochs = 3
 num_workers = 12
 batch_size = 128
@@ -13,13 +10,8 @@ resize_dim = 128
 [PREPROCESS]
 normalize.mean = 0.4
 normalize.std = 0.2
-denoise.template_window_size = 5
-denoise.search_window_size = 19
+denoise.kernel_size = 5
+denoise.sigma_space = 19
+denoise.sigma_color = 10
 colorspace.source_space = 'RGB'
 colorspace.target_space = 'HSV'
-normalize.high_con.mean = 0.15
-normalize.high_con.std = 0.75
-denoise.high_con.template_window_size = 9
-denoise.high_con.search_window_size = 22
-colorspace.high_con.source_space = 'RGB'
-colorspace.high_con.target_space = 'LAB'

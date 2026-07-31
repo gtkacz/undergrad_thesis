@@ -1,7 +1,6 @@
-"""Thesis pipeline: train, evaluate, and export results for all preprocessing combinations.
+"""Train, evaluate, and export the paper's preprocessing experiment.
 
-Runs 65 pipeline configurations × N random seeds to produce results with
-confidence intervals. Grad-CAM analysis runs only on the primary seed.
+Runs the 65 primary pipeline configurations across five random seeds.
 """
 
 from __future__ import annotations
@@ -35,8 +34,8 @@ def main() -> None:
 	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 	logger.info("Using device: %s", device)
 
-	training_config, base_config, high_con_config = load_configs()
-	preprocess_configs = [base_config, high_con_config]
+	training_config, base_config = load_configs()
+	preprocess_configs = [base_config]
 
 	all_seed_results: dict[int, dict] = {}
 
@@ -45,13 +44,10 @@ def main() -> None:
 		logger.info("SEED %d (%d/%d)", seed, SEEDS.index(seed) + 1, len(SEEDS))
 		logger.info("=" * 60)
 
-		run_gradcam = seed == PRIMARY_SEED
-
 		seed_results = run_full_experiment(
 			training_config=training_config,
 			preprocess_configs=preprocess_configs,
 			device=device,
-			run_gradcam=run_gradcam,
 			seed=seed,
 		)
 
@@ -81,7 +77,7 @@ def _write_seed_manifest(
 	}
 	manifest_path = OUTPUT_DIR / "seed_manifest.json"
 	manifest_path.parent.mkdir(parents=True, exist_ok=True)
-	manifest_path.write_text(json.dumps(manifest, indent=2))
+	manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 	logger.info("Seed manifest written to %s", manifest_path)
 
 
