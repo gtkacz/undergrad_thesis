@@ -57,6 +57,10 @@ def setup_elsevier_style() -> None:
 		"patch.linewidth": 0.5,
 		"axes.grid": False,
 		"text.usetex": False,
+		# Matplotlib defaults to Type 3 fonts, which Elsevier production rejects and
+		# which leave figure text unsearchable; 42 selects TrueType instead.
+		"pdf.fonttype": 42,
+		"ps.fonttype": 42,
 	})
 
 
